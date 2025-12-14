@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weekend Warriors V7.0 Final</title>
+    <title>Weekend Warriors Gold Master</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         * {
@@ -18,6 +18,47 @@
             background: linear-gradient(135deg, #0a0a0a, #1a1a2e, #0a0a0a);
             min-height: 100vh;
             color: #33cc66
+        }
+
+        body.shake {
+            animation: screenShake 0.5s ease-in-out;
+        }
+
+        @keyframes screenShake {
+
+            0%,
+            100% {
+                transform: translateX(0)
+            }
+
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: translateX(-5px)
+            }
+
+            20%,
+            40%,
+            60%,
+            80% {
+                transform: translateX(5px)
+            }
+        }
+
+        .cmt.goal-home {
+            color: #33cc66 !important;
+        }
+
+        .cmt.goal-away,
+        .cmt.injury,
+        .cmt.redcard {
+            color: #f44 !important;
+        }
+
+        .cmt.chaos {
+            color: #D4AF37 !important;
         }
 
         .container {
@@ -677,7 +718,9 @@
         <header>
             <button class="help-btn" onclick="showTutorial()">?</button>
             <button class="mute-btn" id="mute-btn" onclick="toggleMute()">🔊</button>
-            <h1>⚽ WEEKEND WARRIORS V6.0 ⚽</h1>
+            <h1>⚽ WEEKEND WARRIORS ⚽</h1>
+            <div class="subtitle" id="sub">Sunday League Manager</div>
+            <div class="subtitle" id="team-name-display" style="color:#D4AF37;margin-top:4px"></div>
             <div class="subtitle" id="sub">Sunday League Manager</div>
             <div class="lang-toggle">
                 <button class="lang-btn active" onclick="setLang('en')">EN</button>
@@ -819,7 +862,17 @@
                 <button class="btn" onclick="closeTrophy()">OK</button>
             </div>
         </div>
-        <footer>© 2024 WEEKEND WARRIORS V7.0 FINAL PATCHED</footer>
+        <div class="modal" id="m-teamname">
+            <div class="modal-box">
+                <div class="modal-icon">⚽</div>
+                <div class="modal-title" id="teamname-title">TEAM NAME</div>
+                <input type="text" id="teamname-input"
+                    style="width:100%;padding:10px;font-family:inherit;font-size:8px;background:#1a1a2e;border:2px solid #D4AF37;color:#D4AF37;margin-bottom:10px"
+                    placeholder="Atlético Barrio">
+                <button class="btn btn-gold" onclick="setTeamName()">OK</button>
+            </div>
+        </div>
+        <footer>© 2025 Weekend Warriors</footer>
     </div>
     <script>
         const L = { en: { sub: "Sunday League Manager", hq: "THE CANTINA", money: "MONEY", morale: "MORALE", fans: "FANS", week: "WEEK", record: "RECORD", sponsorT: "CHOOSE SPONSOR", squadT: "YOUR SQUAD", marketT: "BLACK MARKET", select: "Select 11 starters", sponsors: [{ n: "🍗 LUCKY CLUCK", b: "+10 Morale", d: "$30/wk", pay: 30, mor: 10 }, { n: "🔧 QUICK TYRES", b: "$80/wk", d: "Nephew", pay: 80, neph: 1 }, { n: "⚰️ ETERNAL REST", b: "+$25/injury", d: "-5 Morale", inj: 25 }], acts: [{ id: "party", t: "🎉 BENDER", d: "$100", c: 100 }, { id: "beach", t: "🏖️ BEACH", d: "$200", c: 200 }, { id: "potion", t: "🧪 POTION", d: "$10", c: 10 }], stads: [{ n: "🌿 DIRT", tk: 50, inj: 1.2, c: 0 }, { n: "🌳 PARK", tk: 80, inj: 1, c: 300 }, { n: "🚧 FENCED", tk: 120, inj: .8, c: 600 }, { n: "🏟️ STADIUM", tk: 200, inj: .5, c: 1200 }], ht: [{ id: "orange", t: "🍊 ORANGES", d: "+10 Energy" }, { id: "shout", t: "😤 HAIRDRYER", d: "+10 Morale" }, { id: "bribe", t: "💰 BRIBE $50", d: "Ref", c: 50 }], int: [{ q: "Ref blind?", a: [{ t: "Yes!", f: 10, m: -5 }, { t: "Moving on", f: 0, m: 5 }, { t: "We were bad", f: -10, m: 10 }] }], work: ["Boss overtime", "Plumbing", "Shopping"], workT: "WORK EMERGENCY", payW: "PAY $50", letM: "MISS", noMoney: "Not enough!", fire: "FIRE", fireC: "Fire? -10 Morale", names: ["Big Dave", "Mad Dog", "Gaz", "Smithy", "Steve", "Bob", "One Lung", "Two Pints", "Fridge", "Psycho"], jobs: ["Plumber", "Bouncer", "Cabbie", "Builder", "IT", "Nini"], traits: ["Lazy", "Hothead", "Diver", "Smoker", "Late", "Complainer"], teams: ["YOUR TEAM", "REAL CAGUAMA", "ATLETICO HANGOVER", "DEPORTIVO YOLO", "FC BEER BELLIES", "INTER DIVORCE", "UNITED BENDERS", "SPORTING CRUDOS", "AC PARKING", "DYNAMO KEBAB"], comm: { ko: "KICK OFF!", hg: "GOOOAL!", ag: "Goal...", ht: "HALF TIME", ft: "FULL TIME!" }, tut: "⚡FATIGUE=Low Skill\n🏟️STADIUM=More $\n💪MORALE=Better\n👷JOBS=Miss games", bankrupt: "BANKRUPT!", champ: "CHAMPIONS!" }, es: { sub: "Mánager Liguilla", hq: "LA CANTINA", money: "LANA", morale: "MORAL", fans: "PORRA", week: "SEMANA", record: "RÉCORD", sponsorT: "ELIGE SPONSOR", squadT: "TUS TRONCOS", marketT: "MERCADO NEGRO", select: "Elige 11", sponsors: [{ n: "🍗 POLLERÍA", b: "+10 Moral", d: "$30/sem", pay: 30, mor: 10 }, { n: "🔧 VULCANIZADORA", b: "$80/sem", d: "Sobrino", pay: 80, neph: 1 }, { n: "⚰️ FUNERALES", b: "+$25/lesión", d: "-5 Moral", inj: 25 }], acts: [{ id: "party", t: "🎉 PEDA", d: "$100", c: 100 }, { id: "beach", t: "🏖️ PLAYA", d: "$200", c: 200 }, { id: "potion", t: "🧪 TONAYÁN", d: "$10", c: 10 }], stads: [{ n: "🌿 BALDÍO", tk: 50, inj: 1.2, c: 0 }, { n: "🌳 PARQUE", tk: 80, inj: 1, c: 300 }, { n: "🚧 CERCADA", tk: 120, inj: .8, c: 600 }, { n: "🏟️ ESTADIO", tk: 200, inj: .5, c: 1200 }], ht: [{ id: "orange", t: "🍊 NARANJAS", d: "+10 Energía" }, { id: "shout", t: "😤 MENTADA", d: "+10 Moral" }, { id: "bribe", t: "💰 MORDIDA $50", d: "Árbitro", c: 50 }], int: [{ q: "¿Árbitro ciego?", a: [{ t: "¡Sí!", f: 10, m: -5 }, { t: "Seguimos", f: 0, m: 5 }, { t: "Mal", f: -10, m: 10 }] }], work: ["Patrón overtime", "Plomería", "Compras"], workT: "EMERGENCIA CHAMBA", payW: "PAGAR $50", letM: "FALTAR", noMoney: "¡No hay lana!", fire: "DESPEDIR", fireC: "¿Despedir? -10 Moral", names: ["El Kevin", "El Gordo", "Don Chuy", "El Brayan", "El Abuelo", "El Pelos", "El Chilango", "El Crudo", "El Rata", "El Tuercas"], jobs: ["Taquero", "Albañil", "Microbusero", "Nini", "Plomero", "Viene-Viene"], traits: ["Flojo", "Caliente", "Clavadista", "Fumador", "Tardón", "Quejoso"], teams: ["TU EQUIPO", "REAL CAGUAMA", "ATLÉTICO CRUDOS", "DEPORTIVO YOLO", "FC PANZONES", "INTER DIVORCIADOS", "PAPÁS BRAVOS", "SPORTING BORRACHINES", "ESTACIONAMIENTO FC", "DINAMO TACOS"], comm: { ko: "¡ARRANCA!", hg: "¡GOOOOOL!", ag: "Gol...", ht: "MEDIO TIEMPO", ft: "¡FINAL!" }, tut: "⚡FATIGA=Menos Skill\n🏟️ESTADIO=Más $\n💪MORAL=Mejor\n👷CHAMBAS=Faltan", bankrupt: "¡QUIEBRA!", champ: "¡CAMPEONES!" } };
@@ -891,18 +944,34 @@
         // Override sfx with mute check
         const _sfx = sfx;
         sfx = function (t) { if (!muted) _sfx(t); };
-        // Override startMatch to add weather
+        // V10.0 TEAM NAME
+        let teamName = localStorage.getItem('ww_teamname') || '';
+        function showTeamNameModal() { document.getElementById('teamname-title').textContent = lang == 'en' ? 'TEAM NAME' : 'NOMBRE DEL EQUIPO'; document.getElementById('m-teamname').classList.add('active'); }
+        function setTeamName() { let n = document.getElementById('teamname-input').value.trim(); teamName = n || (lang == 'en' ? 'Atlético Barrio' : 'Atlético Barrio'); localStorage.setItem('ww_teamname', teamName); document.getElementById('m-teamname').classList.remove('active'); updateTeamDisplay(); L.en.teams[0] = teamName; L.es.teams[0] = teamName; go('sponsor'); }
+        function updateTeamDisplay() { document.getElementById('team-name-display').textContent = teamName ? '📋 ' + teamName : ''; }
+        // SCREEN SHAKE
+        function screenShake() { document.body.classList.add('shake'); setTimeout(() => document.body.classList.remove('shake'), 500); }
+        // Override startMatch to add weather + strict 11 validation
         const _startMatch = startMatch;
-        startMatch = function () { setWeather(); _startMatch(); let p = document.getElementById('pitch'); p.classList.remove('rainy', 'heat'); if (weather != 'normal') p.classList.add(weather); document.getElementById('m-time').innerHTML = "0' " + WEATHER_ICON[weather]; };
-        // Override addCmt to include narratives
+        startMatch = function () { let starters = S.players.filter(p => p.starter && !p.hurt); if (starters.length !== 11) { alert(lang == 'en' ? 'Need exactly 11 healthy starters!' : '¡Necesitas exactamente 11 titulares sanos!'); sfx('error'); go('squad'); return; } setWeather(); _startMatch(); let p = document.getElementById('pitch'); p.classList.remove('rainy', 'heat'); if (weather != 'normal') p.classList.add(weather); document.getElementById('m-time').innerHTML = "0' " + WEATHER_ICON[weather]; };
+        // Override addCmt with chaos class + screen shake on goals
         const _addCmt = addCmt;
-        addCmt = function (m, txt, cls) { _addCmt(m, txt, cls); if (cls == '' && Math.random() < 0.3) { setTimeout(() => _addCmt(m, '📢 ' + getNarrative(), ''), 200); } };
-        // Override postMatch for weather fatigue
+        addCmt = function (m, txt, cls) { let finalCls = cls; if (cls == 'home') { finalCls = 'goal-home'; screenShake(); } else if (cls == 'away') { finalCls = 'goal-away'; } _addCmt(m, txt, finalCls); if (cls == '' && Math.random() < 0.25) { setTimeout(() => { let box = document.getElementById('comm'); box.innerHTML += `<div class="cmt chaos"><strong>${m}'</strong> - 📢 ${getNarrative()}</div>`; box.scrollTop = box.scrollHeight; }, 200); } };
+        // Override postMatch for 50% fatigue reduction + weather
         const _postMatch = postMatch;
-        postMatch = function () { let wm = getWeatherMod(); S.players.filter(p => p.starter).forEach(p => { p.energy = Math.max(0, p.energy - Math.floor(5 * wm.fat)); }); _postMatch(); };
+        postMatch = function () { let wm = getWeatherMod(); S.players.filter(p => p.starter).forEach(p => { p.energy = Math.max(0, p.energy - Math.floor(7.5 * wm.fat * 0.5)); }); _postMatch(); };
         // Override toHQ for season history
         const _toHQ = toHQ;
         toHQ = function () { if (S.week >= 10) { let sorted = [...S.league].sort((a, b) => b.pts - a.pts); let pos = sorted.findIndex(t => t.me) + 1; saveHistory(getHistory().length + 1, pos, sorted[0].name); } _toHQ(); };
+        // Override htChoice for bribe mechanic (60% goal, 40% red card)
+        const _htChoice = htChoice;
+        htChoice = function (id) { if (id == 'bribe') { if (!canPay(50, 'btn-ht-bribe')) return; S.money -= 50; if (Math.random() < 0.6) { S.hScore++; document.getElementById('home-sc').textContent = S.hScore; sfx('goal'); addCmt(45, lang == 'en' ? '🤫 Ref accepts! PENALTY GOAL!' : '🤫 ¡Árbitro acepta! ¡GOL DE PENAL!', 'home'); screenShake(); } else { let starters = S.players.filter(p => p.starter && !p.hurt); if (starters.length > 0) { let victim = starters[Math.floor(Math.random() * starters.length)]; victim.hurt = true; sfx('error'); addCmt(45, lang == 'en' ? '😡 Ref offended! RED CARD for ' + victim.name + '!' : '😡 ¡Árbitro ofendido! ¡ROJA para ' + victim.name + '!', ''); screenShake(); } } document.getElementById('ht-box').classList.add('hidden'); S.paused = false; ui(); runMatch(); return; } _htChoice(id); };
+        // Override newGame to show team name modal
+        const _newGame = newGame;
+        newGame = function () { if (!localStorage.getItem('ww_teamname')) { _newGame(); showTeamNameModal(); } else { teamName = localStorage.getItem('ww_teamname'); L.en.teams[0] = teamName; L.es.teams[0] = teamName; updateTeamDisplay(); _newGame(); } };
+        // Override init to update team display
+        const _init = init;
+        init = function () { teamName = localStorage.getItem('ww_teamname') || ''; if (teamName) { L.en.teams[0] = teamName; L.es.teams[0] = teamName; } updateTeamDisplay(); _init(); };
         window.onload = init;
     </script>
 </body>
