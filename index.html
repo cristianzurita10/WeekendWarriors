@@ -768,8 +768,9 @@
             <div class="grid2"><button class="btn" onclick="go('squad')">⚽ SQUAD</button><button class="btn btn-red"
                     onclick="go('market')">🤝 MARKET</button><button class="btn btn-purple" onclick="go('league')">🏆
                     LEAGUE</button><button class="btn" onclick="go('stadium')">🏟️ STADIUM</button></div><button
-                class="btn" onclick="showTrophy()">🏆 TROPHY ROOM</button><button class="btn btn-gold"
-                onclick="preMatch()">⚽ PLAY MATCH</button>
+                class="btn" onclick="showTrophy()">🏆 TROPHY ROOM</button><button class="btn"
+                onclick="showSettings()">⚙️ SETTINGS</button><button class="btn btn-gold" onclick="preMatch()">⚽ PLAY
+                MATCH</button>
         </div>
         <div class="screen" id="s-squad">
             <h2 class="title" id="t-squad">⚽ SQUAD</h2>
@@ -872,7 +873,29 @@
                 <button class="btn btn-gold" onclick="setTeamName()">OK</button>
             </div>
         </div>
-        <footer>© 2025 Weekend Warriors</footer>
+        <div class="modal" id="m-settings">
+            <div class="modal-box">
+                <div class="modal-icon">⚙️</div>
+                <div class="modal-title">SETTINGS</div>
+                <div style="margin-bottom:15px;text-align:left">
+                    <div style="font-size:7px;color:#aaa;margin-bottom:5px">EXPORT SAVE:</div>
+                    <textarea id="export-code" readonly
+                        style="width:100%;height:60px;font-family:monospace;font-size:6px;background:#1a1a2e;border:2px solid #D4AF37;color:#D4AF37;resize:none"></textarea>
+                    <button class="btn" style="font-size:6px;padding:5px;margin-top:5px" onclick="exportSave()">📤
+                        EXPORT</button>
+                </div>
+                <div style="margin-bottom:15px;text-align:left">
+                    <div style="font-size:7px;color:#aaa;margin-bottom:5px">IMPORT SAVE:</div>
+                    <textarea id="import-code"
+                        style="width:100%;height:60px;font-family:monospace;font-size:6px;background:#1a1a2e;border:2px solid #9966ff;color:#9966ff;resize:none"
+                        placeholder="Paste code here..."></textarea>
+                    <button class="btn btn-purple" style="font-size:6px;padding:5px;margin-top:5px"
+                        onclick="importSave()">📥 IMPORT</button>
+                </div>
+                <button class="btn" onclick="closeSettings()">OK</button>
+            </div>
+        </div>
+        <footer>© 2025 Weekend Warriors V11.0</footer>
     </div>
     <script>
         const L = { en: { sub: "Sunday League Manager", hq: "THE CANTINA", money: "MONEY", morale: "MORALE", fans: "FANS", week: "WEEK", record: "RECORD", sponsorT: "CHOOSE SPONSOR", squadT: "YOUR SQUAD", marketT: "BLACK MARKET", select: "Select 11 starters", sponsors: [{ n: "🍗 LUCKY CLUCK", b: "+10 Morale", d: "$30/wk", pay: 30, mor: 10 }, { n: "🔧 QUICK TYRES", b: "$80/wk", d: "Nephew", pay: 80, neph: 1 }, { n: "⚰️ ETERNAL REST", b: "+$25/injury", d: "-5 Morale", inj: 25 }], acts: [{ id: "party", t: "🎉 BENDER", d: "$100", c: 100 }, { id: "beach", t: "🏖️ BEACH", d: "$200", c: 200 }, { id: "potion", t: "🧪 POTION", d: "$10", c: 10 }], stads: [{ n: "🌿 DIRT", tk: 50, inj: 1.2, c: 0 }, { n: "🌳 PARK", tk: 80, inj: 1, c: 300 }, { n: "🚧 FENCED", tk: 120, inj: .8, c: 600 }, { n: "🏟️ STADIUM", tk: 200, inj: .5, c: 1200 }], ht: [{ id: "orange", t: "🍊 ORANGES", d: "+10 Energy" }, { id: "shout", t: "😤 HAIRDRYER", d: "+10 Morale" }, { id: "bribe", t: "💰 BRIBE $50", d: "Ref", c: 50 }], int: [{ q: "Ref blind?", a: [{ t: "Yes!", f: 10, m: -5 }, { t: "Moving on", f: 0, m: 5 }, { t: "We were bad", f: -10, m: 10 }] }], work: ["Boss overtime", "Plumbing", "Shopping"], workT: "WORK EMERGENCY", payW: "PAY $50", letM: "MISS", noMoney: "Not enough!", fire: "FIRE", fireC: "Fire? -10 Morale", names: ["Big Dave", "Mad Dog", "Gaz", "Smithy", "Steve", "Bob", "One Lung", "Two Pints", "Fridge", "Psycho"], jobs: ["Plumber", "Bouncer", "Cabbie", "Builder", "IT", "Nini"], traits: ["Lazy", "Hothead", "Diver", "Smoker", "Late", "Complainer"], teams: ["YOUR TEAM", "REAL CAGUAMA", "ATLETICO HANGOVER", "DEPORTIVO YOLO", "FC BEER BELLIES", "INTER DIVORCE", "UNITED BENDERS", "SPORTING CRUDOS", "AC PARKING", "DYNAMO KEBAB"], comm: { ko: "KICK OFF!", hg: "GOOOAL!", ag: "Goal...", ht: "HALF TIME", ft: "FULL TIME!" }, tut: "⚡FATIGUE=Low Skill\n🏟️STADIUM=More $\n💪MORALE=Better\n👷JOBS=Miss games", bankrupt: "BANKRUPT!", champ: "CHAMPIONS!" }, es: { sub: "Mánager Liguilla", hq: "LA CANTINA", money: "LANA", morale: "MORAL", fans: "PORRA", week: "SEMANA", record: "RÉCORD", sponsorT: "ELIGE SPONSOR", squadT: "TUS TRONCOS", marketT: "MERCADO NEGRO", select: "Elige 11", sponsors: [{ n: "🍗 POLLERÍA", b: "+10 Moral", d: "$30/sem", pay: 30, mor: 10 }, { n: "🔧 VULCANIZADORA", b: "$80/sem", d: "Sobrino", pay: 80, neph: 1 }, { n: "⚰️ FUNERALES", b: "+$25/lesión", d: "-5 Moral", inj: 25 }], acts: [{ id: "party", t: "🎉 PEDA", d: "$100", c: 100 }, { id: "beach", t: "🏖️ PLAYA", d: "$200", c: 200 }, { id: "potion", t: "🧪 TONAYÁN", d: "$10", c: 10 }], stads: [{ n: "🌿 BALDÍO", tk: 50, inj: 1.2, c: 0 }, { n: "🌳 PARQUE", tk: 80, inj: 1, c: 300 }, { n: "🚧 CERCADA", tk: 120, inj: .8, c: 600 }, { n: "🏟️ ESTADIO", tk: 200, inj: .5, c: 1200 }], ht: [{ id: "orange", t: "🍊 NARANJAS", d: "+10 Energía" }, { id: "shout", t: "😤 MENTADA", d: "+10 Moral" }, { id: "bribe", t: "💰 MORDIDA $50", d: "Árbitro", c: 50 }], int: [{ q: "¿Árbitro ciego?", a: [{ t: "¡Sí!", f: 10, m: -5 }, { t: "Seguimos", f: 0, m: 5 }, { t: "Mal", f: -10, m: 10 }] }], work: ["Patrón overtime", "Plomería", "Compras"], workT: "EMERGENCIA CHAMBA", payW: "PAGAR $50", letM: "FALTAR", noMoney: "¡No hay lana!", fire: "DESPEDIR", fireC: "¿Despedir? -10 Moral", names: ["El Kevin", "El Gordo", "Don Chuy", "El Brayan", "El Abuelo", "El Pelos", "El Chilango", "El Crudo", "El Rata", "El Tuercas"], jobs: ["Taquero", "Albañil", "Microbusero", "Nini", "Plomero", "Viene-Viene"], traits: ["Flojo", "Caliente", "Clavadista", "Fumador", "Tardón", "Quejoso"], teams: ["TU EQUIPO", "REAL CAGUAMA", "ATLÉTICO CRUDOS", "DEPORTIVO YOLO", "FC PANZONES", "INTER DIVORCIADOS", "PAPÁS BRAVOS", "SPORTING BORRACHINES", "ESTACIONAMIENTO FC", "DINAMO TACOS"], comm: { ko: "¡ARRANCA!", hg: "¡GOOOOOL!", ag: "Gol...", ht: "MEDIO TIEMPO", ft: "¡FINAL!" }, tut: "⚡FATIGA=Menos Skill\n🏟️ESTADIO=Más $\n💪MORAL=Mejor\n👷CHAMBAS=Faltan", bankrupt: "¡QUIEBRA!", champ: "¡CAMPEONES!" } };
@@ -972,6 +995,19 @@
         // Override init to update team display
         const _init = init;
         init = function () { teamName = localStorage.getItem('ww_teamname') || ''; if (teamName) { L.en.teams[0] = teamName; L.es.teams[0] = teamName; } updateTeamDisplay(); _init(); };
+        // V11.0 SETTINGS & DATA PORTABILITY
+        function showSettings() { document.getElementById('export-code').value = ''; document.getElementById('import-code').value = ''; document.getElementById('m-settings').classList.add('active'); }
+        function closeSettings() { document.getElementById('m-settings').classList.remove('active'); }
+        function exportSave() { try { let data = { money: S.money, morale: S.morale, fans: S.fans, week: S.week, wins: S.wins, draws: S.draws, losses: S.losses, players: S.players, sponsor: S.sponsor, stadLvl: S.stadLvl, league: S.league, scorers: S.scorers, agents: S.agents, oppIdx: S.oppIdx, teamName: teamName }; let code = btoa(JSON.stringify(data)); document.getElementById('export-code').value = code; sfx('cash'); } catch (e) { alert('Export failed!'); } }
+        function importSave() { try { let code = document.getElementById('import-code').value.trim(); if (!code) { alert('Paste a code first!'); return; } let data = JSON.parse(atob(code)); if (!data.money || !data.players || !data.league) throw new Error('Invalid save'); Object.assign(S, data); if (data.teamName) { teamName = data.teamName; localStorage.setItem('ww_teamname', teamName); L.en.teams[0] = teamName; L.es.teams[0] = teamName; updateTeamDisplay(); } S.ctx = null; save(); sfx('cash'); alert(lang == 'en' ? 'Save imported!' : '¡Partida importada!'); closeSettings(); go('hq'); ui(); } catch (e) { sfx('error'); alert(lang == 'en' ? 'Invalid code!' : '¡Código inválido!'); } }
+        // V11.0 BLACK MARKET ITEMS
+        function healPlayer(i) { let p = S.players[i]; if (!p.hurt) { sfx('error'); alert(lang == 'en' ? 'Player not injured!' : '¡Jugador no lesionado!'); return; } if (!canPay(500, 'btn-heal-' + i)) return; S.money -= 500; p.hurt = false; sfx('cash'); save(); ui(); renderSquad(); }
+        function boostEnergy(i) { let p = S.players[i]; if (p.energy >= 100) { sfx('error'); alert(lang == 'en' ? 'Already at max energy!' : '¡Ya tiene máxima energía!'); return; } if (!canPay(300, 'btn-boost-' + i)) return; S.money -= 300; p.energy = 100; sfx('cash'); save(); ui(); renderSquad(); }
+        // Override renderSquad to add Black Market buttons
+        const _renderSquad = renderSquad;
+        renderSquad = function () { let t = T(), cnt = S.players.filter(p => p.starter && !p.hurt).length; document.getElementById('t-squad').textContent = t.squadT; document.getElementById('squad-info').textContent = `${t.select} (${cnt}/11)`; document.getElementById('p-list').innerHTML = S.players.map((p, i) => { let ec = p.energy > 60 ? 'e-hi' : p.energy > 30 ? 'e-mid' : 'e-lo', cc = p.hurt ? 'hurt' : p.starter ? 'sel' : p.energy < 50 ? 'tired' : ''; let shopBtns = ''; if (p.hurt) shopBtns = `<button class="btn btn-gold" id="btn-heal-${i}" style="font-size:5px;padding:3px;width:auto" onclick="healPlayer(${i})">🏥$500</button>`; else if (p.energy < 100) shopBtns = `<button class="btn btn-purple" id="btn-boost-${i}" style="font-size:5px;padding:3px;width:auto" onclick="boostEnergy(${i})">🧪$300</button>`; return `<div class="player ${cc}"><input type="checkbox" ${p.starter ? 'checked' : ''} ${p.hurt ? 'disabled' : ''} onchange="togStart(${i})"><div class="p-info"><div class="p-name">${p.name}${p.neph ? ' 👶' : ''}${p.hurt ? ' 🤕' : ''}</div><div class="p-stats">⚽${p.skill}|💼${p.job}|🥅${p.goals}</div><div class="energy"><div class="energy-fill ${ec}" style="width:${p.energy}%"></div></div></div>${shopBtns}<button class="btn btn-red" style="font-size:6px;padding:5px;width:auto" onclick="fire(${i})">${t.fire}</button></div>` }).join('') };
+        // Update fatigue to 0.8x in postMatch override
+        postMatch = function () { let wm = getWeatherMod(); S.players.filter(p => p.starter).forEach(p => { p.energy = Math.max(0, p.energy - Math.floor(15 * wm.fat * 0.8)); }); _postMatch(); };
         window.onload = init;
     </script>
 </body>
