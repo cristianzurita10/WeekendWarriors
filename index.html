@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekend Warriors V5.0 Final</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background: linear-gradient(135deg, #0a0a0a, #1a1a2e, #0a0a0a);
+            min-height: 100vh;
+            color: #33cc66
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px
+        }
+
+        header {
+            text-align: center;
+            padding: 20px;
+            border-bottom: 4px solid #33cc66;
+            margin-bottom: 20px;
+            position: relative
+        }
+
+        h1 {
+            font-size: 16px;
+            color: #D4AF37;
+            text-shadow: 2px 2px #8B6914
+        }
+
+        .subtitle {
+            font-size: 8px;
+            color: #33cc66;
+            margin-top: 8px
+        }
+
+        .lang-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px
+        }
+
+        .lang-btn {
+            font-family: inherit;
+            background: 0;
+            border: 2px solid #D4AF37;
+            color: #D4AF37;
+            padding: 5px 8px;
+            cursor: pointer;
+            font-size: 7px
+        }
+
+        .lang-btn.active {
+            background: #D4AF37;
+            color: #000
+        }
+
+        .help-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-family: inherit;
+            background: #333;
+            border: 2px solid #9966ff;
+            color: #9966ff;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 10px;
+            border-radius: 50%
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: rgba(0, 0, 0, .5);
+            border: 3px solid #33cc66
+        }
+
+        .stat {
+            text-align: center
+        }
+
+        .stat-lbl {
+            font-size: 6px;
+            color: #D4AF37
+        }
+
+        .stat-val {
+            font-size: 11px;
+            color: #33cc66
+        }
+
+        .screen {
+            display: none;
+            padding: 15px;
+            background: rgba(0, 0, 0, .3);
+            border: 2px solid #33cc66;
+            min-height: 400px
+        }
+
+        .screen.active {
+            display: block
+        }
+
+        .title {
+            font-size: 12px;
+            color: #D4AF37;
+            text-align: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #33cc66
+        }
+
+        .btn {
+            font-family: inherit;
+            background: linear-gradient(180deg, #2a5a2a, #1a3a1a);
+            border: 3px solid #33cc66;
+            color: #33cc66;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 8px;
+            width: 100%;
+            margin-bottom: 8px;
+            transition: .2s
+        }
+
+        .btn:hover {
+            box-shadow: 0 0 15px rgba(51, 204, 102, .4)
+        }
+
+        .btn:disabled {
+            opacity: .5;
+            cursor: not-allowed
+        }
+
+        .btn-gold {
+            background: linear-gradient(180deg, #D4AF37, #8B6914);
+            border-color: #FFD700;
+            color: #000
+        }
+
+        .btn-red {
+            background: linear-gradient(180deg, #8B0000, #4a0000);
+            border-color: #f44;
+            color: #f44
+        }
+
+        .btn-purple {
+            background: linear-gradient(180deg, #4a2a6a, #2a1a4a);
+            border-color: #96f;
+            color: #96f
+        }
+
+        .btn.flash {
+            animation: flash .3s 2
+        }
+
+        @keyframes flash {
+
+            0%,
+            100% {
+                background: #8B0000
+            }
+
+            50% {
+                background: #f00
+            }
+        }
+
+        .grid2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px
+        }
+
+        .section {
+            background: rgba(0, 0, 0, .4);
+            border: 2px solid #33cc66;
+            padding: 12px;
+            margin-bottom: 12px
+        }
+
+        .section-title {
+            font-size: 9px;
+            color: #D4AF37;
+            margin-bottom: 10px;
+            text-align: center
+        }
+
+        .player {
+            background: rgba(0, 0, 0, .6);
+            border: 2px solid #33cc66;
+            padding: 8px;
+            margin-bottom: 6px;
+            display: grid;
+            grid-template-columns: 25px 1fr auto;
+            gap: 8px;
+            align-items: center
+        }
+
+        .player.sel {
+            border-color: #D4AF37;
+            background: rgba(212, 175, 55, .1)
+        }
+
+        .player.tired {
+            border-color: #fa0
+        }
+
+        .player.hurt {
+            border-color: #f44;
+            opacity: .6
+        }
+
+        .player input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer
+        }
+
+        .p-info {
+            font-size: 7px
+        }
+
+        .p-name {
+            color: #D4AF37;
+            margin-bottom: 3px
+        }
+
+        .p-stats {
+            color: #aaa
+        }
+
+        .energy {
+            height: 5px;
+            background: #333;
+            margin-top: 3px
+        }
+
+        .energy-fill {
+            height: 100%;
+            transition: .3s
+        }
+
+        .e-hi {
+            background: #3c6
+        }
+
+        .e-mid {
+            background: #fa0
+        }
+
+        .e-lo {
+            background: #f44
+        }
+
+        .merc {
+            background: rgba(0, 0, 0, .6);
+            border: 2px solid #f0f;
+            padding: 10px;
+            margin-bottom: 8px
+        }
+
+        .merc-name {
+            color: #f0f;
+            font-size: 9px;
+            margin-bottom: 6px
+        }
+
+        .merc-stats {
+            font-size: 7px;
+            color: #aaa
+        }
+
+        .league-tbl {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 7px
+        }
+
+        .league-tbl th,
+        .league-tbl td {
+            padding: 6px 3px;
+            border-bottom: 1px solid #333;
+            text-align: center
+        }
+
+        .league-tbl th {
+            background: #1a3a1a;
+            color: #D4AF37
+        }
+
+        .league-tbl .me {
+            background: rgba(212, 175, 55, .15);
+            color: #D4AF37
+        }
+
+        .pichichi {
+            font-size: 7px
+        }
+
+        .pichichi-item {
+            padding: 5px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between
+        }
+
+        .pichichi-item:first-child {
+            color: #D4AF37;
+            background: rgba(212, 175, 55, .1)
+        }
+
+        .match-hdr {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 12px;
+            background: rgba(0, 0, 0, .5);
+            border: 2px solid #D4AF37
+        }
+
+        .team {
+            font-size: 9px;
+            color: #3c6;
+            max-width: 100px;
+            text-align: center
+        }
+
+        .score {
+            font-size: 24px;
+            color: #D4AF37
+        }
+
+        .vs {
+            font-size: 9px;
+            color: #666
+        }
+
+        .time {
+            font-size: 11px;
+            color: #D4AF37;
+            text-align: center;
+            margin-bottom: 8px
+        }
+
+        .pitch {
+            height: 90px;
+            border: 3px solid #3c6;
+            position: relative;
+            margin-bottom: 12px;
+            overflow: hidden
+        }
+
+        .pitch-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 25px;
+            height: 25px;
+            border: 2px solid rgba(255, 255, 255, .2);
+            border-radius: 50%
+        }
+
+        .ball {
+            position: absolute;
+            font-size: 14px;
+            transition: .5s
+        }
+
+        .comm {
+            background: rgba(0, 0, 0, .7);
+            border: 2px solid #3c6;
+            height: 100px;
+            overflow-y: auto;
+            padding: 6px;
+            font-size: 7px
+        }
+
+        .cmt {
+            padding: 5px;
+            border-bottom: 1px solid rgba(51, 204, 102, .2);
+            color: #ccc
+        }
+
+        .cmt.home {
+            background: rgba(212, 175, 55, .2);
+            color: #D4AF37;
+            border-left: 3px solid #D4AF37
+        }
+
+        .cmt.away {
+            background: rgba(255, 68, 68, .2);
+            color: #f66;
+            border-left: 3px solid #f44
+        }
+
+        .ht-box {
+            margin-top: 15px
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, .9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000
+        }
+
+        .modal.active {
+            display: flex
+        }
+
+        .modal-box {
+            background: linear-gradient(135deg, #1a1a2e, #0a0a1e);
+            border: 4px solid #D4AF37;
+            padding: 20px;
+            max-width: 380px;
+            text-align: center
+        }
+
+        .modal-icon {
+            font-size: 36px;
+            margin-bottom: 12px
+        }
+
+        .modal-title {
+            font-size: 11px;
+            color: #D4AF37;
+            margin-bottom: 12px
+        }
+
+        .modal-desc {
+            font-size: 8px;
+            color: #aaa;
+            margin-bottom: 15px;
+            line-height: 1.5
+        }
+
+        .interview {
+            background: rgba(0, 0, 0, .5);
+            border: 2px solid #96f;
+            padding: 12px;
+            margin-bottom: 12px
+        }
+
+        .interview-q {
+            font-size: 8px;
+            color: #96f;
+            margin-bottom: 12px
+        }
+
+        .fan-bar {
+            height: 18px;
+            background: #333;
+            border: 2px solid #96f;
+            margin-bottom: 12px
+        }
+
+        .fan-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #96f, #c9f);
+            transition: .3s
+        }
+
+        .upgrade {
+            background: rgba(0, 0, 0, .5);
+            border: 2px solid #D4AF37;
+            padding: 12px;
+            margin-bottom: 8px
+        }
+
+        .upgrade.current {
+            border-color: #3c6
+        }
+
+        .upgrade-name {
+            font-size: 9px;
+            color: #D4AF37;
+            margin-bottom: 6px
+        }
+
+        .upgrade-info {
+            font-size: 7px;
+            color: #aaa
+        }
+
+        .stadium-vis {
+            height: 70px;
+            border: 3px solid #3c6;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px
+        }
+
+        .lvl1 {
+            background: linear-gradient(to right, #3a2a1a, #4a3a2a, #3a2a1a)
+        }
+
+        .lvl2 {
+            background: linear-gradient(to right, #2a4a2a, #3a5a3a, #2a4a2a)
+        }
+
+        .lvl3 {
+            background: linear-gradient(to right, #1a4a1a, #2a6a2a, #1a4a1a)
+        }
+
+        .lvl4 {
+            background: linear-gradient(to right, #0a3a0a, #1a5a1a, #0a3a0a)
+        }
+
+        .hidden {
+            display: none !important
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0)
+            }
+
+            25% {
+                transform: translateX(-5px)
+            }
+
+            75% {
+                transform: translateX(5px)
+            }
+        }
+
+        .shake {
+            animation: shake .3s 2
+        }
+
+        .gameover {
+            text-align: center;
+            padding: 40px
+        }
+
+        .gameover-title {
+            font-size: 16px;
+            color: #f44;
+            margin-bottom: 20px
+        }
+
+        .champion-title {
+            font-size: 16px;
+            color: #D4AF37;
+            margin-bottom: 20px
+        }
+
+        @keyframes firework {
+            0% {
+                opacity: 1;
+                transform: scale(1)
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(2)
+            }
+        }
+
+        .fireworks {
+            font-size: 30px;
+            animation: firework 1s infinite
+        }
+
+        footer {
+            text-align: center;
+            padding: 12px;
+            font-size: 6px;
+            color: #666;
+            border-top: 2px solid #333;
+            margin-top: 15px
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <button class="help-btn" onclick="showTutorial()">?</button>
+            <h1>⚽ WEEKEND WARRIORS V5.0 ⚽</h1>
+            <div class="subtitle" id="sub">Sunday League Manager</div>
+            <div class="lang-toggle">
+                <button class="lang-btn active" onclick="setLang('en')">EN</button>
+                <button class="lang-btn" onclick="setLang('es')">ES</button>
+            </div>
+        </header>
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-lbl" id="l-money">MONEY</div>
+                <div class="stat-val" id="v-money">$500</div>
+            </div>
+            <div class="stat">
+                <div class="stat-lbl" id="l-morale">MORALE</div>
+                <div class="stat-val" id="v-morale">50%</div>
+            </div>
+            <div class="stat">
+                <div class="stat-lbl" id="l-fans">FANS</div>
+                <div class="stat-val" id="v-fans">50%</div>
+            </div>
+            <div class="stat">
+                <div class="stat-lbl" id="l-week">WEEK</div>
+                <div class="stat-val" id="v-week">1</div>
+            </div>
+            <div class="stat">
+                <div class="stat-lbl" id="l-record">RECORD</div>
+                <div class="stat-val" id="v-record">0-0-0</div>
+            </div>
+        </div>
+        <div class="screen active" id="s-start">
+            <h2 class="title">⚽ WEEKEND WARRIORS V5.0 ⚽</h2>
+            <div style="text-align:center;margin-top:30px"><button class="btn btn-gold" onclick="newGame()">🆕 NEW
+                    GAME</button><button class="btn hidden" onclick="loadGame()" id="btn-cont">💾 CONTINUE</button>
+            </div>
+        </div>
+        <div class="screen" id="s-sponsor">
+            <h2 class="title" id="t-sponsor">🤝 CHOOSE SPONSOR</h2>
+            <div id="sponsor-grid"></div>
+        </div>
+        <div class="screen" id="s-hq">
+            <h2 class="title" id="t-hq">🍺 LA CANTINA</h2>
+            <div class="section">
+                <div class="section-title" id="l-act">ACTIONS</div>
+                <div id="act-grid" class="grid2"></div>
+            </div>
+            <div class="grid2"><button class="btn" onclick="go('squad')">⚽ SQUAD</button><button class="btn btn-red"
+                    onclick="go('market')">🤝 MARKET</button><button class="btn btn-purple" onclick="go('league')">🏆
+                    LEAGUE</button><button class="btn" onclick="go('stadium')">🏟️ STADIUM</button></div><button
+                class="btn btn-gold" onclick="preMatch()">⚽ PLAY MATCH</button>
+        </div>
+        <div class="screen" id="s-squad">
+            <h2 class="title" id="t-squad">⚽ SQUAD</h2>
+            <div style="font-size:7px;color:#aaa;text-align:center;margin-bottom:12px" id="squad-info">Select 11</div>
+            <div id="p-list"></div><button class="btn" onclick="go('hq')">← BACK</button>
+        </div>
+        <div class="screen" id="s-market">
+            <h2 class="title" id="t-market">🤝 MARKET</h2>
+            <div id="m-list"></div><button class="btn" onclick="go('hq')">← BACK</button>
+        </div>
+        <div class="screen" id="s-league">
+            <h2 class="title">🏆 LEAGUE</h2>
+            <div id="league-tbl"></div>
+            <div class="section" style="margin-top:12px">
+                <div class="section-title">🥇 PICHICHI</div>
+                <div id="pichichi" class="pichichi"></div>
+            </div><button class="btn" onclick="go('hq')">← BACK</button>
+        </div>
+        <div class="screen" id="s-stadium">
+            <h2 class="title">🏟️ STADIUM</h2>
+            <div id="stad-vis" class="stadium-vis lvl1">🏟️</div>
+            <div id="stad-up"></div><button class="btn" onclick="go('hq')">← BACK</button>
+        </div>
+        <div class="screen" id="s-pre">
+            <h2 class="title" id="t-pre">⚽ PRE-MATCH</h2>
+            <div id="pre-content"></div>
+        </div>
+        <div class="screen" id="s-match">
+            <h2 class="title">⚽ MATCH DAY</h2>
+            <div class="match-hdr">
+                <div class="team" id="home-name">YOU</div>
+                <div class="score"><span id="home-sc">0</span><span class="vs">-</span><span id="away-sc">0</span></div>
+                <div class="team" id="away-name">OPP</div>
+            </div>
+            <div class="time" id="m-time">0'</div>
+            <div id="pitch" class="pitch lvl1">
+                <div class="pitch-center"></div>
+                <div class="ball" id="ball">⚽</div>
+            </div>
+            <div class="comm" id="comm"></div>
+            <div id="ht-box" class="ht-box hidden"></div>
+            <div id="ft-box"></div>
+        </div>
+        <div class="screen" id="s-post">
+            <h2 class="title" id="t-post">📋 REPORT</h2>
+            <div id="result" style="font-size:11px;color:#D4AF37;text-align:center;margin-bottom:15px"></div>
+            <div class="section">
+                <div class="section-title">💰 FINANCES</div>
+                <div id="fin"></div>
+            </div>
+            <div class="interview" id="int-box">
+                <div class="interview-q" id="int-q"></div>
+                <div id="int-ch"></div>
+            </div><button class="btn btn-gold hidden" onclick="toHQ()" id="btn-hq">→ CONTINUE</button>
+        </div>
+        <div class="screen" id="s-over">
+            <div class="gameover">
+                <div class="gameover-title" id="over-title">💀 GAME OVER 💀</div>
+                <div id="over-msg" style="font-size:8px;color:#aaa;margin-bottom:20px"></div><button
+                    class="btn btn-gold" onclick="location.reload()">🔄 RESTART</button>
+            </div>
+        </div>
+        <div class="screen" id="s-champ">
+            <div class="gameover">
+                <div class="fireworks">🎆🏆🎆</div>
+                <div class="champion-title">🏆 CHAMPIONS! 🏆</div>
+                <div style="font-size:8px;color:#aaa;margin-bottom:20px" id="champ-msg"></div><button
+                    class="btn btn-gold" onclick="location.reload()">🆕 NEW SEASON</button>
+            </div>
+        </div>
+        <div class="modal" id="m-work">
+            <div class="modal-box">
+                <div class="modal-icon">👷</div>
+                <div class="modal-title" id="work-t">WORK</div>
+                <div class="modal-desc" id="work-d"></div>
+                <div id="work-btn"></div>
+            </div>
+        </div>
+        <div class="modal" id="m-tut">
+            <div class="modal-box">
+                <div class="modal-icon">📖</div>
+                <div class="modal-title">TUTORIAL</div>
+                <div class="modal-desc" id="tut-txt"></div><button class="btn" onclick="closeTut()">OK</button>
+            </div>
+        </div>
+        <footer>© 2024 WEEKEND WARRIORS V5.0 FINAL</footer>
+    </div>
+    <script>
+        const L = { en: { sub: "Sunday League Manager", hq: "THE CANTINA", money: "MONEY", morale: "MORALE", fans: "FANS", week: "WEEK", record: "RECORD", sponsorT: "CHOOSE SPONSOR", squadT: "YOUR SQUAD", marketT: "BLACK MARKET", select: "Select 11 starters", sponsors: [{ n: "🍗 LUCKY CLUCK", b: "+10 Morale", d: "$30/wk", pay: 30, mor: 10 }, { n: "🔧 QUICK TYRES", b: "$80/wk", d: "Nephew", pay: 80, neph: 1 }, { n: "⚰️ ETERNAL REST", b: "+$25/injury", d: "-5 Morale", inj: 25 }], acts: [{ id: "party", t: "🎉 BENDER", d: "$100", c: 100 }, { id: "beach", t: "🏖️ BEACH", d: "$200", c: 200 }, { id: "potion", t: "🧪 POTION", d: "$10", c: 10 }], stads: [{ n: "🌿 DIRT", tk: 50, inj: 1.2, c: 0 }, { n: "🌳 PARK", tk: 80, inj: 1, c: 300 }, { n: "🚧 FENCED", tk: 120, inj: .8, c: 600 }, { n: "🏟️ STADIUM", tk: 200, inj: .5, c: 1200 }], ht: [{ id: "orange", t: "🍊 ORANGES", d: "+10 Energy" }, { id: "shout", t: "😤 HAIRDRYER", d: "+10 Morale" }, { id: "bribe", t: "💰 BRIBE $50", d: "Ref", c: 50 }], int: [{ q: "Ref blind?", a: [{ t: "Yes!", f: 10, m: -5 }, { t: "Moving on", f: 0, m: 5 }, { t: "We were bad", f: -10, m: 10 }] }], work: ["Boss overtime", "Plumbing", "Shopping"], workT: "WORK EMERGENCY", payW: "PAY $50", letM: "MISS", noMoney: "Not enough!", fire: "FIRE", fireC: "Fire? -10 Morale", names: ["Big Dave", "Mad Dog", "Gaz", "Smithy", "Steve", "Bob", "One Lung", "Two Pints", "Fridge", "Psycho"], jobs: ["Plumber", "Bouncer", "Cabbie", "Builder", "IT", "Nini"], traits: ["Lazy", "Hothead", "Diver", "Smoker", "Late", "Complainer"], teams: ["YOUR TEAM", "REAL CAGUAMA", "ATLETICO HANGOVER", "DEPORTIVO YOLO", "FC BEER BELLIES", "INTER DIVORCE", "UNITED BENDERS", "SPORTING CRUDOS", "AC PARKING", "DYNAMO KEBAB"], comm: { ko: "KICK OFF!", hg: "GOOOAL!", ag: "Goal...", ht: "HALF TIME", ft: "FULL TIME!" }, tut: "⚡FATIGUE=Low Skill\n🏟️STADIUM=More $\n💪MORALE=Better\n👷JOBS=Miss games", bankrupt: "BANKRUPT!", champ: "CHAMPIONS!" }, es: { sub: "Mánager Liguilla", hq: "LA CANTINA", money: "LANA", morale: "MORAL", fans: "PORRA", week: "SEMANA", record: "RÉCORD", sponsorT: "ELIGE SPONSOR", squadT: "TUS TRONCOS", marketT: "MERCADO NEGRO", select: "Elige 11", sponsors: [{ n: "🍗 POLLERÍA", b: "+10 Moral", d: "$30/sem", pay: 30, mor: 10 }, { n: "🔧 VULCANIZADORA", b: "$80/sem", d: "Sobrino", pay: 80, neph: 1 }, { n: "⚰️ FUNERALES", b: "+$25/lesión", d: "-5 Moral", inj: 25 }], acts: [{ id: "party", t: "🎉 PEDA", d: "$100", c: 100 }, { id: "beach", t: "🏖️ PLAYA", d: "$200", c: 200 }, { id: "potion", t: "🧪 TONAYÁN", d: "$10", c: 10 }], stads: [{ n: "🌿 BALDÍO", tk: 50, inj: 1.2, c: 0 }, { n: "🌳 PARQUE", tk: 80, inj: 1, c: 300 }, { n: "🚧 CERCADA", tk: 120, inj: .8, c: 600 }, { n: "🏟️ ESTADIO", tk: 200, inj: .5, c: 1200 }], ht: [{ id: "orange", t: "🍊 NARANJAS", d: "+10 Energía" }, { id: "shout", t: "😤 MENTADA", d: "+10 Moral" }, { id: "bribe", t: "💰 MORDIDA $50", d: "Árbitro", c: 50 }], int: [{ q: "¿Árbitro ciego?", a: [{ t: "¡Sí!", f: 10, m: -5 }, { t: "Seguimos", f: 0, m: 5 }, { t: "Mal", f: -10, m: 10 }] }], work: ["Patrón overtime", "Plomería", "Compras"], workT: "EMERGENCIA CHAMBA", payW: "PAGAR $50", letM: "FALTAR", noMoney: "¡No hay lana!", fire: "DESPEDIR", fireC: "¿Despedir? -10 Moral", names: ["El Kevin", "El Gordo", "Don Chuy", "El Brayan", "El Abuelo", "El Pelos", "El Chilango", "El Crudo", "El Rata", "El Tuercas"], jobs: ["Taquero", "Albañil", "Microbusero", "Nini", "Plomero", "Viene-Viene"], traits: ["Flojo", "Caliente", "Clavadista", "Fumador", "Tardón", "Quejoso"], teams: ["TU EQUIPO", "REAL CAGUAMA", "ATLÉTICO CRUDOS", "DEPORTIVO YOLO", "FC PANZONES", "INTER DIVORCIADOS", "PAPÁS BRAVOS", "SPORTING BORRACHINES", "ESTACIONAMIENTO FC", "DINAMO TACOS"], comm: { ko: "¡ARRANCA!", hg: "¡GOOOOOL!", ag: "Gol...", ht: "MEDIO TIEMPO", ft: "¡FINAL!" }, tut: "⚡FATIGA=Menos Skill\n🏟️ESTADIO=Más $\n💪MORAL=Mejor\n👷CHAMBAS=Faltan", bankrupt: "¡QUIEBRA!", champ: "¡CAMPEONES!" } };
+        let lang = 'en', S = { money: 500, morale: 50, fans: 50, week: 1, wins: 0, draws: 0, losses: 0, players: [], agents: [], league: [], scorers: [], sponsor: null, stadLvl: 0, hScore: 0, aScore: 0, opp: "", oppIdx: 0, events: [], evIdx: 0, paused: false, bribed: false, ctx: null };
+        function T() { return L[lang] }
+        function sfx(t) { try { if (!S.ctx) S.ctx = new (window.AudioContext || window.webkitAudioContext)(); let c = S.ctx, o = c.createOscillator(), g = c.createGain(); o.connect(g); g.connect(c.destination); if (t == 'goal') { o.type = 'square'; o.frequency.setValueAtTime(523, c.currentTime); o.frequency.setValueAtTime(784, c.currentTime + .15); g.gain.setValueAtTime(.2, c.currentTime); o.start(); o.stop(c.currentTime + .3) } else if (t == 'whistle') { o.type = 'square'; o.frequency.setValueAtTime(800, c.currentTime); o.frequency.setValueAtTime(600, c.currentTime + .1); g.gain.setValueAtTime(.15, c.currentTime); o.start(); o.stop(c.currentTime + .2) } else if (t == 'cash') { o.type = 'sine'; o.frequency.setValueAtTime(1200, c.currentTime); g.gain.setValueAtTime(.1, c.currentTime); o.start(); o.stop(c.currentTime + .1) } else if (t == 'error') { o.type = 'sawtooth'; o.frequency.setValueAtTime(100, c.currentTime); g.gain.setValueAtTime(.2, c.currentTime); o.start(); o.stop(c.currentTime + .25) } } catch (e) { } }
+        function canPay(cost, btn) { if (S.money >= cost) return true; sfx('error'); if (btn) { let b = document.getElementById(btn); if (b) { b.classList.add('flash'); setTimeout(() => b.classList.remove('flash'), 600) } } alert(T().noMoney); return false }
+        function save() { localStorage.setItem('ww5', JSON.stringify({ money: S.money, morale: S.morale, fans: S.fans, week: S.week, wins: S.wins, draws: S.draws, losses: S.losses, players: S.players, sponsor: S.sponsor, stadLvl: S.stadLvl, league: S.league, scorers: S.scorers, agents: S.agents, oppIdx: S.oppIdx })) }
+        function load() { try { let d = JSON.parse(localStorage.getItem('ww5')); if (d) { Object.assign(S, d); S.ctx = null; go('hq'); ui(); sfx('cash') } } catch (e) { newGame() } }
+        function init() { if (localStorage.getItem('ww5')) document.getElementById('btn-cont').classList.remove('hidden'); ui() }
+        function newGame() { localStorage.removeItem('ww5'); S = { money: 500, morale: 50, fans: 50, week: 1, wins: 0, draws: 0, losses: 0, players: [], agents: [], league: [], scorers: [], sponsor: null, stadLvl: 0, hScore: 0, aScore: 0, opp: "", oppIdx: 0, events: [], evIdx: 0, paused: false, bribed: false, ctx: null }; genTeam(); initLeague(); renderSponsors(); go('sponsor'); ui() }
+        function genTeam() { let t = T(); S.players = []; for (let i = 0; i < 14; i++)S.players.push({ id: i, name: t.names[Math.floor(Math.random() * t.names.length)], job: t.jobs[Math.floor(Math.random() * t.jobs.length)], skill: 30 + Math.floor(Math.random() * 40), energy: 70 + Math.floor(Math.random() * 30), trait: t.traits[Math.floor(Math.random() * t.traits.length)], hurt: false, goals: 0, starter: i < 11 }) }
+        function initLeague() { let t = T().teams; S.league = t.map((n, i) => ({ name: n, p: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0, me: i === 0 })); S.scorers = [] }
+        function go(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById('s-' + id).classList.add('active'); if (id == 'squad') renderSquad(); if (id == 'market') renderMarket(); if (id == 'league') renderLeague(); if (id == 'stadium') renderStadium(); if (id == 'hq') renderHQ() }
+        function ui() { let t = T(); document.getElementById('sub').textContent = t.sub; document.getElementById('l-money').textContent = t.money; document.getElementById('l-morale').textContent = t.morale; document.getElementById('l-fans').textContent = t.fans; document.getElementById('l-week').textContent = t.week; document.getElementById('l-record').textContent = t.record; document.getElementById('v-money').textContent = '$' + S.money; document.getElementById('v-morale').textContent = S.morale + '%'; document.getElementById('v-fans').textContent = S.fans + '%'; document.getElementById('v-week').textContent = S.week; document.getElementById('v-record').textContent = S.wins + '-' + S.draws + '-' + S.losses }
+        function setLang(l) { lang = l; document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active')); document.querySelector(`.lang-btn[onclick="setLang('${l}')"]`).classList.add('active'); ui(); if (S.players.length) renderHQ() }
+        function renderSponsors() { let t = T(); document.getElementById('t-sponsor').textContent = t.sponsorT; document.getElementById('sponsor-grid').innerHTML = t.sponsors.map((s, i) => `<div class="section" style="cursor:pointer" onclick="pickSponsor(${i})"><div class="section-title">${s.n}</div><div style="font-size:7px;color:#3c6">✅${s.b}</div><div style="font-size:7px;color:#f44">⚠️${s.d}</div></div>`).join('') }
+        function pickSponsor(i) { S.sponsor = T().sponsors[i]; sfx('cash'); if (S.sponsor.neph) S.players.push({ id: 99, name: lang == 'en' ? "Nephew" : "Sobrino", job: "Nephew", skill: 5, energy: 100, trait: T().traits[0], hurt: false, goals: 0, starter: true, neph: true }); go('hq') }
+        function renderHQ() { let t = T(); document.getElementById('t-hq').textContent = '🍺 ' + t.hq; document.getElementById('l-act').textContent = '🎭 ACTIONS'; document.getElementById('act-grid').innerHTML = t.acts.map(a => `<button class="btn" id="btn-${a.id}" onclick="doAct('${a.id}')">${a.t}<br><span style="font-size:6px;color:#aaa">${a.d}</span></button>`).join('') }
+        function doAct(id) { let t = T(), a = t.acts.find(x => x.id == id); if (!canPay(a.c, 'btn-' + id)) return; S.money -= a.c; sfx('cash'); if (id == 'party') { S.morale = Math.min(100, S.morale + 25); S.players.forEach(p => p.energy = Math.max(0, p.energy - 15)) } else if (id == 'beach') { S.morale = Math.min(100, S.morale + 20); if (Math.random() < .25) { let v = S.players[Math.floor(Math.random() * S.players.length)]; v.hurt = true } } else if (id == 'potion') { let v = S.players[Math.floor(Math.random() * S.players.length)]; v.skill = Math.min(99, v.skill + 15) } ui() }
+        function renderSquad() { let t = T(), cnt = S.players.filter(p => p.starter && !p.hurt).length; document.getElementById('t-squad').textContent = t.squadT; document.getElementById('squad-info').textContent = `${t.select} (${cnt}/11)`; document.getElementById('p-list').innerHTML = S.players.map((p, i) => { let ec = p.energy > 60 ? 'e-hi' : p.energy > 30 ? 'e-mid' : 'e-lo', cc = p.hurt ? 'hurt' : p.starter ? 'sel' : p.energy < 50 ? 'tired' : ''; return `<div class="player ${cc}"><input type="checkbox" ${p.starter ? 'checked' : ''} ${p.hurt ? 'disabled' : ''} onchange="togStart(${i})"><div class="p-info"><div class="p-name">${p.name}${p.neph ? ' 👶' : ''}${p.hurt ? ' 🤕' : ''}</div><div class="p-stats">⚽${p.skill}|💼${p.job}|🥅${p.goals}</div><div class="energy"><div class="energy-fill ${ec}" style="width:${p.energy}%"></div></div></div><button class="btn btn-red" style="font-size:6px;padding:5px;width:auto" onclick="fire(${i})">${t.fire}</button></div>` }).join('') }
+        function togStart(i) { let p = S.players[i]; if (p.hurt) return; let cnt = S.players.filter(x => x.starter && !x.hurt).length; if (!p.starter && cnt >= 11) { sfx('error'); return } p.starter = !p.starter; renderSquad() }
+        function fire(i) { if (S.players.length <= 7) { sfx('error'); return } if (!confirm(T().fireC)) return; S.players.splice(i, 1); S.morale = Math.max(0, S.morale - 10); sfx('error'); ui(); renderSquad() }
+        function renderMarket() { if (S.agents.length == 0) genAgents(); document.getElementById('t-market').textContent = T().marketT; document.getElementById('m-list').innerHTML = S.agents.map((m, i) => `<div class="merc"><div class="merc-name">🔥${m.name}</div><div class="merc-stats">⚽${m.skill}|💸$${m.cost}|📄${m.games}g</div><button class="btn btn-purple" id="btn-h${i}" style="margin-top:8px" onclick="hire(${i})">HIRE</button></div>`).join('') }
+        function genAgents() { let t = T(); S.agents = []; for (let i = 0; i < 3; i++)S.agents.push({ name: t.names[Math.floor(Math.random() * t.names.length)] + (lang == 'en' ? ' Jr' : ' Merc'), skill: 50 + Math.floor(Math.random() * 30), cost: 50 + Math.floor(Math.random() * 100), games: 2 + Math.floor(Math.random() * 3) }) }
+        function hire(i) { let m = S.agents[i]; if (!canPay(m.cost, 'btn-h' + i)) return; S.money -= m.cost; sfx('cash'); S.players.push({ id: Date.now(), name: m.name, job: 'Merc', skill: m.skill, energy: 80, trait: T().traits[0], hurt: false, goals: 0, starter: false, merc: true, gLeft: m.games }); S.agents.splice(i, 1); ui(); renderMarket() }
+        function renderLeague() { let sorted = [...S.league].sort((a, b) => b.pts - a.pts || (b.gf - b.ga) - (a.gf - a.ga)); let h = '<table class="league-tbl"><tr><th>#</th><th>TEAM</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GD</th><th>PTS</th></tr>'; sorted.forEach((t, i) => { let gd = t.gf - t.ga; h += `<tr class="${t.me ? 'me' : ''}"><td>${i + 1}</td><td style="text-align:left">${t.name}</td><td>${t.p}</td><td>${t.w}</td><td>${t.d}</td><td>${t.l}</td><td>${gd > 0 ? '+' : ''}${gd}</td><td>${t.pts}</td></tr>` }); h += '</table>'; document.getElementById('league-tbl').innerHTML = h; let top = [...S.scorers].sort((a, b) => b.goals - a.goals).slice(0, 5); document.getElementById('pichichi').innerHTML = top.length ? top.map((s, i) => `<div class="pichichi-item"><span>${i + 1}.${s.name}</span><span>⚽${s.goals}</span></div>`).join('') : '<div style="color:#666;text-align:center">No goals</div>' }
+        function simAI() { let ai = S.league.filter(t => !t.me).sort(() => Math.random() - .5); for (let i = 0; i < ai.length - 1; i += 2) { let h = ai[i], a = ai[i + 1]; if (!a) continue; let hg = Math.floor(Math.random() * 4), ag = Math.floor(Math.random() * 4); h.p++; a.p++; h.gf += hg; h.ga += ag; a.gf += ag; a.ga += hg; if (hg > ag) { h.w++; h.pts += 3; a.l++ } else if (ag > hg) { a.w++; a.pts += 3; h.l++ } else { h.d++; a.d++; h.pts++; a.pts++ } } }
+        function renderStadium() { let t = T().stads; document.getElementById('stad-vis').className = 'stadium-vis lvl' + (S.stadLvl + 1); document.getElementById('stad-vis').innerHTML = t[S.stadLvl].n; document.getElementById('stad-up').innerHTML = t.map((s, i) => { let cur = i == S.stadLvl, nxt = i == S.stadLvl + 1; return `<div class="upgrade ${cur ? 'current' : ''}"><div class="upgrade-name">${s.n}${cur ? ' ✅' : ''}</div><div class="upgrade-info">🎟️$${s.tk}|🩹${Math.round(s.inj * 100)}%</div>${nxt ? `<button class="btn btn-gold" id="btn-up" style="margin-top:8px" onclick="upStad()">UPGRADE $${s.c}</button>` : ''}</div>` }).join('') }
+        function upStad() { let nxt = T().stads[S.stadLvl + 1]; if (!nxt || !canPay(nxt.c, 'btn-up')) return; S.money -= nxt.c; S.stadLvl++; sfx('cash'); ui(); renderStadium() }
+        function preMatch() { let starters = S.players.filter(p => p.starter && !p.hurt); if (starters.length < 11) { sfx('error'); go('squad'); return } if (Math.random() < .15) { showWork(); return } go('pre'); renderPre() }
+        function showWork() { let avail = S.players.filter(p => p.starter && !p.hurt && !p.neph); if (!avail.length) { go('pre'); renderPre(); return } let v = avail[Math.floor(Math.random() * avail.length)]; S.workV = v; let t = T(); document.getElementById('work-t').textContent = t.workT; document.getElementById('work-d').innerHTML = `<strong>${v.name}</strong><br><br>${t.work[Math.floor(Math.random() * t.work.length)]}`; document.getElementById('work-btn').innerHTML = `<button class="btn btn-gold" onclick="payWork()">${t.payW}</button><button class="btn btn-red" onclick="skipWork()">${t.letM}</button>`; document.getElementById('m-work').classList.add('active') }
+        function payWork() { if (!canPay(50)) return; S.money -= 50; sfx('cash'); S.workV = null; document.getElementById('m-work').classList.remove('active'); ui(); go('pre'); renderPre() }
+        function skipWork() { S.workV.starter = false; sfx('error'); S.workV = null; document.getElementById('m-work').classList.remove('active'); go('pre'); renderPre() }
+        function renderPre() { let ai = S.league.filter(t => !t.me); S.oppIdx = S.oppIdx % ai.length; S.opp = ai[S.oppIdx].name; S.oppIdx++; document.getElementById('t-pre').textContent = lang == 'en' ? '⚽ PRE-MATCH' : '⚽ PRE-PARTIDO'; document.getElementById('pre-content').innerHTML = `<div class="section"><div class="section-title">${lang == 'en' ? 'OPPONENT' : 'RIVAL'}</div><div style="font-size:12px;color:#D4AF37;text-align:center">${S.opp}</div></div><button class="btn btn-gold" onclick="startMatch()">⚽ ${lang == 'en' ? 'KICK OFF' : 'INICIAR'}</button>` }
+        function startMatch() { go('match'); sfx('whistle'); S.hScore = 0; S.aScore = 0; S.evIdx = 0; S.paused = false; S.bribed = false; S.events = []; document.getElementById('home-name').textContent = T().teams[0]; document.getElementById('away-name').textContent = S.opp; document.getElementById('home-sc').textContent = '0'; document.getElementById('away-sc').textContent = '0'; document.getElementById('m-time').textContent = "0'"; document.getElementById('comm').innerHTML = ''; document.getElementById('ht-box').innerHTML = ''; document.getElementById('ht-box').classList.add('hidden'); document.getElementById('ft-box').innerHTML = ''; document.getElementById('pitch').className = 'pitch lvl' + (S.stadLvl + 1); document.getElementById('ball').style.left = '50%'; document.getElementById('ball').style.top = '50%'; genEvents(); runMatch() }
+        function genEvents() { let str = S.players.filter(p => p.starter && !p.hurt).reduce((s, p) => s + p.skill + (p.energy > 50 ? 10 : -10), 0) / 11; let hc = Math.min(70, Math.max(30, 40 + (str - 50) / 2 + S.morale / 10)); S.events = []; for (let m = 5; m <= 90; m += 5 + Math.floor(Math.random() * 5)) { if (m >= 45 && m < 50) { S.events.push({ min: 45, type: 'ht' }); continue } let r = Math.random() * 100; if (r < 12) S.events.push({ min: m, type: r < hc / 8 ? 'hg' : 'ag' }); else S.events.push({ min: m, type: 'act' }) } S.events.push({ min: 90, type: 'ft' }) }
+        function runMatch() { function tick() { if (S.evIdx >= S.events.length || S.paused) return; let e = S.events[S.evIdx]; document.getElementById('m-time').textContent = e.min + "'"; let ball = document.getElementById('ball'); if (e.type == 'hg') { S.hScore++; document.getElementById('home-sc').textContent = S.hScore; sfx('goal'); ball.style.left = '10%'; let sc = S.players.filter(p => p.starter && !p.hurt)[Math.floor(Math.random() * 11)]; if (sc) { sc.goals++; updScorer(sc.name) } addCmt(e.min, T().comm.hg + (sc ? ' (' + sc.name + ')' : ''), 'home') } else if (e.type == 'ag') { if (S.bribed) { S.bribed = false; addCmt(e.min, '🤫 Disallowed!', ''); S.evIdx++; setTimeout(tick, 300); return } S.aScore++; document.getElementById('away-sc').textContent = S.aScore; sfx('error'); ball.style.left = '90%'; addCmt(e.min, T().comm.ag, 'away') } else if (e.type == 'ht') { addCmt(45, T().comm.ht, ''); S.paused = true; S.evIdx++; showHT(); return } else if (e.type == 'ft') { sfx('whistle'); addCmt(90, T().comm.ft, ''); showFT(); return } else { ball.style.left = (20 + Math.random() * 60) + '%'; ball.style.top = (20 + Math.random() * 60) + '%' } S.evIdx++; setTimeout(tick, 300 + Math.random() * 200) } addCmt(0, T().comm.ko, ''); tick() }
+        function addCmt(m, txt, cls) { let box = document.getElementById('comm'); box.innerHTML += `<div class="cmt ${cls}"><strong>${m}'</strong> - ${txt}</div>`; box.scrollTop = box.scrollHeight }
+        function updScorer(n) { let s = S.scorers.find(x => x.name == n); if (s) s.goals++; else S.scorers.push({ name: n, goals: 1 }) }
+        function showHT() { let t = T().ht; document.getElementById('ht-box').classList.remove('hidden'); document.getElementById('ht-box').innerHTML = `<div class="section"><div class="section-title">${lang == 'en' ? 'HALF TIME' : 'MEDIO TIEMPO'}</div>${t.map(h => `<button class="btn" id="btn-ht-${h.id}" onclick="htChoice('${h.id}')">${h.t}<br><span style="font-size:6px;color:#aaa">${h.d}</span></button>`).join('')}</div>` }
+        function htChoice(id) { let h = T().ht.find(x => x.id == id); if (h.c && !canPay(h.c, 'btn-ht-' + id)) return; if (h.c) S.money -= h.c; if (id == 'orange') S.players.forEach(p => { if (p.starter) p.energy = Math.min(100, p.energy + 10) }); if (id == 'shout') S.morale = Math.min(100, S.morale + 10); if (id == 'bribe') S.bribed = true; sfx('cash'); document.getElementById('ht-box').classList.add('hidden'); S.paused = false; ui(); runMatch() }
+        function showFT() { document.getElementById('ft-box').innerHTML = `<div class="section" style="text-align:center"><div style="font-size:14px;color:#D4AF37">${S.hScore}-${S.aScore}</div><button class="btn btn-gold" style="margin-top:12px" onclick="postMatch()">${lang == 'en' ? 'CONTINUE' : 'CONTINUAR'}</button></div>` }
+        function postMatch() { go('post'); let pt = S.league.find(t => t.me), ot = S.league.find(t => t.name == S.opp); pt.p++; pt.gf += S.hScore; pt.ga += S.aScore; if (ot) { ot.p++; ot.gf += S.aScore; ot.ga += S.hScore } let res = '', fc = 0; if (S.hScore > S.aScore) { res = `🏆 ${lang == 'en' ? 'VICTORY' : 'VICTORIA'}! ${S.hScore}-${S.aScore}`; S.wins++; pt.w++; pt.pts += 3; if (ot) ot.l++; fc = 10 } else if (S.hScore < S.aScore) { res = `💀 ${lang == 'en' ? 'DEFEAT' : 'DERROTA'} ${S.hScore}-${S.aScore}`; S.losses++; pt.l++; if (ot) { ot.w++; ot.pts += 3 } fc = -10 } else { res = `🤝 ${lang == 'en' ? 'DRAW' : 'EMPATE'} ${S.hScore}-${S.aScore}`; S.draws++; pt.d++; pt.pts++; if (ot) { ot.d++; ot.pts++ } } S.fans = Math.max(0, Math.min(100, S.fans + fc)); document.getElementById('result').innerHTML = res; let tk = T().stads[S.stadLvl].tk + Math.floor(Math.random() * 50); let wb = S.hScore > S.aScore ? 100 : 0; let sp = S.sponsor?.pay || 0; let dmg = Math.floor(Math.random() * 20); let tot = tk + wb + sp - dmg; S.money += tot; document.getElementById('fin').innerHTML = `<div style="font-size:7px">🎟️+$${tk}<br>🏆+$${wb}<br>🤝+$${sp}<br><span style="color:#f44">🩹-$${dmg}</span><br><span style="color:#D4AF37">💵${tot >= 0 ? '+' : ''}$${tot}</span></div>`; S.players.filter(p => p.starter).forEach(p => { p.energy = Math.max(0, p.energy - 15); if (Math.random() < .04 * T().stads[S.stadLvl].inj) p.hurt = true }); S.players.filter(p => !p.starter && !p.hurt).forEach(p => p.energy = Math.min(100, p.energy + 30)); S.players = S.players.filter(p => !p.merc || --p.gLeft > 0); if (S.sponsor?.mor) S.morale = Math.min(100, S.morale + S.sponsor.mor); showInt() }
+        function showInt() { let iv = T().int[0]; document.getElementById('int-q').textContent = `🎤 "${iv.q}"`; document.getElementById('int-ch').innerHTML = iv.a.map((a, i) => `<button class="btn" style="margin-bottom:6px" onclick="ansInt(${i})">"${a.t}"</button>`).join(''); S.curInt = iv }
+        function ansInt(i) { let a = S.curInt.a[i]; S.fans = Math.max(0, Math.min(100, S.fans + a.f)); S.morale = Math.max(0, Math.min(100, S.morale + a.m)); sfx('cash'); document.getElementById('int-box').classList.add('hidden'); document.getElementById('btn-hq').classList.remove('hidden'); ui() }
+        function toHQ() { S.week++; simAI(); S.agents = []; genAgents(); if (S.money < -500) { localStorage.removeItem('ww5'); go('over'); document.getElementById('over-title').textContent = '💀 GAME OVER 💀'; document.getElementById('over-msg').textContent = T().bankrupt; return } if (S.week > 10) { let sorted = [...S.league].sort((a, b) => b.pts - a.pts); if (sorted[0].me) { go('champ'); document.getElementById('champ-msg').textContent = T().champ; localStorage.removeItem('ww5'); return } } save(); document.getElementById('int-box').classList.remove('hidden'); document.getElementById('btn-hq').classList.add('hidden'); ui(); go('hq') }
+        function showTutorial() { document.getElementById('tut-txt').textContent = T().tut; document.getElementById('m-tut').classList.add('active') }
+        function closeTut() { document.getElementById('m-tut').classList.remove('active') }
+        window.onload = init;
+    </script>
+</body>
+
+</html>
