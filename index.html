@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weekend Warriors V5.0 Final</title>
+    <title>Weekend Warriors V7.0 Final</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         * {
@@ -386,6 +386,75 @@
             transition: .5s
         }
 
+        .mute-btn {
+            position: absolute;
+            top: 20px;
+            left: 60px;
+            font-family: inherit;
+            background: #333;
+            border: 2px solid #fa0;
+            color: #fa0;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 10px;
+            border-radius: 50%
+        }
+
+        .weather-icon {
+            font-size: 16px;
+            margin-left: 10px
+        }
+
+        .pitch.rainy {
+            background: linear-gradient(to bottom, #1a3a3a, #0a2a2a) !important
+        }
+
+        .pitch.rainy::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(transparent 0%, rgba(100, 150, 200, .3) 100%);
+            pointer-events: none;
+            animation: rain 0.5s linear infinite
+        }
+
+        @keyframes rain {
+            0% {
+                background-position: 0 0
+            }
+
+            100% {
+                background-position: 0 20px
+            }
+        }
+
+        .pitch.heat {
+            background: linear-gradient(to bottom, #4a3a1a, #3a2a0a) !important;
+            filter: sepia(30%)
+        }
+
+        .trophy-list {
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 7px
+        }
+
+        .trophy-item {
+            padding: 8px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between
+        }
+
+        .trophy-item.champ {
+            color: #D4AF37;
+            background: rgba(212, 175, 55, .1)
+        }
+
         .comm {
             background: rgba(0, 0, 0, .7);
             border: 2px solid #3c6;
@@ -607,7 +676,8 @@
     <div class="container">
         <header>
             <button class="help-btn" onclick="showTutorial()">?</button>
-            <h1>⚽ WEEKEND WARRIORS V5.0 ⚽</h1>
+            <button class="mute-btn" id="mute-btn" onclick="toggleMute()">🔊</button>
+            <h1>⚽ WEEKEND WARRIORS V6.0 ⚽</h1>
             <div class="subtitle" id="sub">Sunday League Manager</div>
             <div class="lang-toggle">
                 <button class="lang-btn active" onclick="setLang('en')">EN</button>
@@ -637,9 +707,9 @@
             </div>
         </div>
         <div class="screen active" id="s-start">
-            <h2 class="title">⚽ WEEKEND WARRIORS V5.0 ⚽</h2>
+            <h2 class="title">⚽ WEEKEND WARRIORS V7.0 ⚽</h2>
             <div style="text-align:center;margin-top:30px"><button class="btn btn-gold" onclick="newGame()">🆕 NEW
-                    GAME</button><button class="btn hidden" onclick="loadGame()" id="btn-cont">💾 CONTINUE</button>
+                    GAME</button><button class="btn hidden" onclick="load()" id="btn-cont">💾 CONTINUE</button>
             </div>
         </div>
         <div class="screen" id="s-sponsor">
@@ -655,7 +725,8 @@
             <div class="grid2"><button class="btn" onclick="go('squad')">⚽ SQUAD</button><button class="btn btn-red"
                     onclick="go('market')">🤝 MARKET</button><button class="btn btn-purple" onclick="go('league')">🏆
                     LEAGUE</button><button class="btn" onclick="go('stadium')">🏟️ STADIUM</button></div><button
-                class="btn btn-gold" onclick="preMatch()">⚽ PLAY MATCH</button>
+                class="btn" onclick="showTrophy()">🏆 TROPHY ROOM</button><button class="btn btn-gold"
+                onclick="preMatch()">⚽ PLAY MATCH</button>
         </div>
         <div class="screen" id="s-squad">
             <h2 class="title" id="t-squad">⚽ SQUAD</h2>
@@ -738,10 +809,17 @@
             <div class="modal-box">
                 <div class="modal-icon">📖</div>
                 <div class="modal-title">TUTORIAL</div>
-                <div class="modal-desc" id="tut-txt"></div><button class="btn" onclick="closeTut()">OK</button>
             </div>
         </div>
-        <footer>© 2024 WEEKEND WARRIORS V5.0 FINAL</footer>
+        <div class="modal" id="m-trophy">
+            <div class="modal-box">
+                <div class="modal-icon">🏆</div>
+                <div class="modal-title">TROPHY ROOM</div>
+                <div class="trophy-list" id="trophy-list"></div>
+                <button class="btn" onclick="closeTrophy()">OK</button>
+            </div>
+        </div>
+        <footer>© 2024 WEEKEND WARRIORS V7.0 FINAL PATCHED</footer>
     </div>
     <script>
         const L = { en: { sub: "Sunday League Manager", hq: "THE CANTINA", money: "MONEY", morale: "MORALE", fans: "FANS", week: "WEEK", record: "RECORD", sponsorT: "CHOOSE SPONSOR", squadT: "YOUR SQUAD", marketT: "BLACK MARKET", select: "Select 11 starters", sponsors: [{ n: "🍗 LUCKY CLUCK", b: "+10 Morale", d: "$30/wk", pay: 30, mor: 10 }, { n: "🔧 QUICK TYRES", b: "$80/wk", d: "Nephew", pay: 80, neph: 1 }, { n: "⚰️ ETERNAL REST", b: "+$25/injury", d: "-5 Morale", inj: 25 }], acts: [{ id: "party", t: "🎉 BENDER", d: "$100", c: 100 }, { id: "beach", t: "🏖️ BEACH", d: "$200", c: 200 }, { id: "potion", t: "🧪 POTION", d: "$10", c: 10 }], stads: [{ n: "🌿 DIRT", tk: 50, inj: 1.2, c: 0 }, { n: "🌳 PARK", tk: 80, inj: 1, c: 300 }, { n: "🚧 FENCED", tk: 120, inj: .8, c: 600 }, { n: "🏟️ STADIUM", tk: 200, inj: .5, c: 1200 }], ht: [{ id: "orange", t: "🍊 ORANGES", d: "+10 Energy" }, { id: "shout", t: "😤 HAIRDRYER", d: "+10 Morale" }, { id: "bribe", t: "💰 BRIBE $50", d: "Ref", c: 50 }], int: [{ q: "Ref blind?", a: [{ t: "Yes!", f: 10, m: -5 }, { t: "Moving on", f: 0, m: 5 }, { t: "We were bad", f: -10, m: 10 }] }], work: ["Boss overtime", "Plumbing", "Shopping"], workT: "WORK EMERGENCY", payW: "PAY $50", letM: "MISS", noMoney: "Not enough!", fire: "FIRE", fireC: "Fire? -10 Morale", names: ["Big Dave", "Mad Dog", "Gaz", "Smithy", "Steve", "Bob", "One Lung", "Two Pints", "Fridge", "Psycho"], jobs: ["Plumber", "Bouncer", "Cabbie", "Builder", "IT", "Nini"], traits: ["Lazy", "Hothead", "Diver", "Smoker", "Late", "Complainer"], teams: ["YOUR TEAM", "REAL CAGUAMA", "ATLETICO HANGOVER", "DEPORTIVO YOLO", "FC BEER BELLIES", "INTER DIVORCE", "UNITED BENDERS", "SPORTING CRUDOS", "AC PARKING", "DYNAMO KEBAB"], comm: { ko: "KICK OFF!", hg: "GOOOAL!", ag: "Goal...", ht: "HALF TIME", ft: "FULL TIME!" }, tut: "⚡FATIGUE=Low Skill\n🏟️STADIUM=More $\n💪MORALE=Better\n👷JOBS=Miss games", bankrupt: "BANKRUPT!", champ: "CHAMPIONS!" }, es: { sub: "Mánager Liguilla", hq: "LA CANTINA", money: "LANA", morale: "MORAL", fans: "PORRA", week: "SEMANA", record: "RÉCORD", sponsorT: "ELIGE SPONSOR", squadT: "TUS TRONCOS", marketT: "MERCADO NEGRO", select: "Elige 11", sponsors: [{ n: "🍗 POLLERÍA", b: "+10 Moral", d: "$30/sem", pay: 30, mor: 10 }, { n: "🔧 VULCANIZADORA", b: "$80/sem", d: "Sobrino", pay: 80, neph: 1 }, { n: "⚰️ FUNERALES", b: "+$25/lesión", d: "-5 Moral", inj: 25 }], acts: [{ id: "party", t: "🎉 PEDA", d: "$100", c: 100 }, { id: "beach", t: "🏖️ PLAYA", d: "$200", c: 200 }, { id: "potion", t: "🧪 TONAYÁN", d: "$10", c: 10 }], stads: [{ n: "🌿 BALDÍO", tk: 50, inj: 1.2, c: 0 }, { n: "🌳 PARQUE", tk: 80, inj: 1, c: 300 }, { n: "🚧 CERCADA", tk: 120, inj: .8, c: 600 }, { n: "🏟️ ESTADIO", tk: 200, inj: .5, c: 1200 }], ht: [{ id: "orange", t: "🍊 NARANJAS", d: "+10 Energía" }, { id: "shout", t: "😤 MENTADA", d: "+10 Moral" }, { id: "bribe", t: "💰 MORDIDA $50", d: "Árbitro", c: 50 }], int: [{ q: "¿Árbitro ciego?", a: [{ t: "¡Sí!", f: 10, m: -5 }, { t: "Seguimos", f: 0, m: 5 }, { t: "Mal", f: -10, m: 10 }] }], work: ["Patrón overtime", "Plomería", "Compras"], workT: "EMERGENCIA CHAMBA", payW: "PAGAR $50", letM: "FALTAR", noMoney: "¡No hay lana!", fire: "DESPEDIR", fireC: "¿Despedir? -10 Moral", names: ["El Kevin", "El Gordo", "Don Chuy", "El Brayan", "El Abuelo", "El Pelos", "El Chilango", "El Crudo", "El Rata", "El Tuercas"], jobs: ["Taquero", "Albañil", "Microbusero", "Nini", "Plomero", "Viene-Viene"], traits: ["Flojo", "Caliente", "Clavadista", "Fumador", "Tardón", "Quejoso"], teams: ["TU EQUIPO", "REAL CAGUAMA", "ATLÉTICO CRUDOS", "DEPORTIVO YOLO", "FC PANZONES", "INTER DIVORCIADOS", "PAPÁS BRAVOS", "SPORTING BORRACHINES", "ESTACIONAMIENTO FC", "DINAMO TACOS"], comm: { ko: "¡ARRANCA!", hg: "¡GOOOOOL!", ag: "Gol...", ht: "MEDIO TIEMPO", ft: "¡FINAL!" }, tut: "⚡FATIGA=Menos Skill\n🏟️ESTADIO=Más $\n💪MORAL=Mejor\n👷CHAMBAS=Faltan", bankrupt: "¡QUIEBRA!", champ: "¡CAMPEONES!" } };
@@ -751,7 +829,7 @@
         function canPay(cost, btn) { if (S.money >= cost) return true; sfx('error'); if (btn) { let b = document.getElementById(btn); if (b) { b.classList.add('flash'); setTimeout(() => b.classList.remove('flash'), 600) } } alert(T().noMoney); return false }
         function save() { localStorage.setItem('ww5', JSON.stringify({ money: S.money, morale: S.morale, fans: S.fans, week: S.week, wins: S.wins, draws: S.draws, losses: S.losses, players: S.players, sponsor: S.sponsor, stadLvl: S.stadLvl, league: S.league, scorers: S.scorers, agents: S.agents, oppIdx: S.oppIdx })) }
         function load() { try { let d = JSON.parse(localStorage.getItem('ww5')); if (d) { Object.assign(S, d); S.ctx = null; go('hq'); ui(); sfx('cash') } } catch (e) { newGame() } }
-        function init() { if (localStorage.getItem('ww5')) document.getElementById('btn-cont').classList.remove('hidden'); ui() }
+        function init() { if (localStorage.getItem('ww5')) document.getElementById('btn-cont').classList.remove('hidden'); ui(); if (!localStorage.getItem('ww_tutorial_seen')) { showTutorial(); localStorage.setItem('ww_tutorial_seen', '1'); } }
         function newGame() { localStorage.removeItem('ww5'); S = { money: 500, morale: 50, fans: 50, week: 1, wins: 0, draws: 0, losses: 0, players: [], agents: [], league: [], scorers: [], sponsor: null, stadLvl: 0, hScore: 0, aScore: 0, opp: "", oppIdx: 0, events: [], evIdx: 0, paused: false, bribed: false, ctx: null }; genTeam(); initLeague(); renderSponsors(); go('sponsor'); ui() }
         function genTeam() { let t = T(); S.players = []; for (let i = 0; i < 14; i++)S.players.push({ id: i, name: t.names[Math.floor(Math.random() * t.names.length)], job: t.jobs[Math.floor(Math.random() * t.jobs.length)], skill: 30 + Math.floor(Math.random() * 40), energy: 70 + Math.floor(Math.random() * 30), trait: t.traits[Math.floor(Math.random() * t.traits.length)], hurt: false, goals: 0, starter: i < 11 }) }
         function initLeague() { let t = T().teams; S.league = t.map((n, i) => ({ name: n, p: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0, me: i === 0 })); S.scorers = [] }
@@ -761,17 +839,17 @@
         function renderSponsors() { let t = T(); document.getElementById('t-sponsor').textContent = t.sponsorT; document.getElementById('sponsor-grid').innerHTML = t.sponsors.map((s, i) => `<div class="section" style="cursor:pointer" onclick="pickSponsor(${i})"><div class="section-title">${s.n}</div><div style="font-size:7px;color:#3c6">✅${s.b}</div><div style="font-size:7px;color:#f44">⚠️${s.d}</div></div>`).join('') }
         function pickSponsor(i) { S.sponsor = T().sponsors[i]; sfx('cash'); if (S.sponsor.neph) S.players.push({ id: 99, name: lang == 'en' ? "Nephew" : "Sobrino", job: "Nephew", skill: 5, energy: 100, trait: T().traits[0], hurt: false, goals: 0, starter: true, neph: true }); go('hq') }
         function renderHQ() { let t = T(); document.getElementById('t-hq').textContent = '🍺 ' + t.hq; document.getElementById('l-act').textContent = '🎭 ACTIONS'; document.getElementById('act-grid').innerHTML = t.acts.map(a => `<button class="btn" id="btn-${a.id}" onclick="doAct('${a.id}')">${a.t}<br><span style="font-size:6px;color:#aaa">${a.d}</span></button>`).join('') }
-        function doAct(id) { let t = T(), a = t.acts.find(x => x.id == id); if (!canPay(a.c, 'btn-' + id)) return; S.money -= a.c; sfx('cash'); if (id == 'party') { S.morale = Math.min(100, S.morale + 25); S.players.forEach(p => p.energy = Math.max(0, p.energy - 15)) } else if (id == 'beach') { S.morale = Math.min(100, S.morale + 20); if (Math.random() < .25) { let v = S.players[Math.floor(Math.random() * S.players.length)]; v.hurt = true } } else if (id == 'potion') { let v = S.players[Math.floor(Math.random() * S.players.length)]; v.skill = Math.min(99, v.skill + 15) } ui() }
+        function doAct(id) { let t = T(), a = t.acts.find(x => x.id == id); if (!canPay(a.c, 'btn-' + id)) return; S.money -= a.c; sfx('cash'); if (id == 'party') { S.morale = Math.min(100, S.morale + 25); S.players.forEach(p => p.energy = Math.max(0, p.energy - 15)) } else if (id == 'beach') { S.morale = Math.min(100, S.morale + 20); if (Math.random() < .25) { let v = S.players[Math.floor(Math.random() * S.players.length)]; v.hurt = true } } else if (id == 'potion') { let v = S.players[Math.floor(Math.random() * S.players.length)]; v.skill = Math.min(99, v.skill + 15) } save(); ui() }
         function renderSquad() { let t = T(), cnt = S.players.filter(p => p.starter && !p.hurt).length; document.getElementById('t-squad').textContent = t.squadT; document.getElementById('squad-info').textContent = `${t.select} (${cnt}/11)`; document.getElementById('p-list').innerHTML = S.players.map((p, i) => { let ec = p.energy > 60 ? 'e-hi' : p.energy > 30 ? 'e-mid' : 'e-lo', cc = p.hurt ? 'hurt' : p.starter ? 'sel' : p.energy < 50 ? 'tired' : ''; return `<div class="player ${cc}"><input type="checkbox" ${p.starter ? 'checked' : ''} ${p.hurt ? 'disabled' : ''} onchange="togStart(${i})"><div class="p-info"><div class="p-name">${p.name}${p.neph ? ' 👶' : ''}${p.hurt ? ' 🤕' : ''}</div><div class="p-stats">⚽${p.skill}|💼${p.job}|🥅${p.goals}</div><div class="energy"><div class="energy-fill ${ec}" style="width:${p.energy}%"></div></div></div><button class="btn btn-red" style="font-size:6px;padding:5px;width:auto" onclick="fire(${i})">${t.fire}</button></div>` }).join('') }
         function togStart(i) { let p = S.players[i]; if (p.hurt) return; let cnt = S.players.filter(x => x.starter && !x.hurt).length; if (!p.starter && cnt >= 11) { sfx('error'); return } p.starter = !p.starter; renderSquad() }
-        function fire(i) { if (S.players.length <= 7) { sfx('error'); return } if (!confirm(T().fireC)) return; S.players.splice(i, 1); S.morale = Math.max(0, S.morale - 10); sfx('error'); ui(); renderSquad() }
+        function fire(i) { if (S.players.length <= 7) { sfx('error'); return } if (!confirm(T().fireC)) return; S.players.splice(i, 1); S.morale = Math.max(0, S.morale - 10); sfx('error'); save(); ui(); renderSquad() }
         function renderMarket() { if (S.agents.length == 0) genAgents(); document.getElementById('t-market').textContent = T().marketT; document.getElementById('m-list').innerHTML = S.agents.map((m, i) => `<div class="merc"><div class="merc-name">🔥${m.name}</div><div class="merc-stats">⚽${m.skill}|💸$${m.cost}|📄${m.games}g</div><button class="btn btn-purple" id="btn-h${i}" style="margin-top:8px" onclick="hire(${i})">HIRE</button></div>`).join('') }
         function genAgents() { let t = T(); S.agents = []; for (let i = 0; i < 3; i++)S.agents.push({ name: t.names[Math.floor(Math.random() * t.names.length)] + (lang == 'en' ? ' Jr' : ' Merc'), skill: 50 + Math.floor(Math.random() * 30), cost: 50 + Math.floor(Math.random() * 100), games: 2 + Math.floor(Math.random() * 3) }) }
-        function hire(i) { let m = S.agents[i]; if (!canPay(m.cost, 'btn-h' + i)) return; S.money -= m.cost; sfx('cash'); S.players.push({ id: Date.now(), name: m.name, job: 'Merc', skill: m.skill, energy: 80, trait: T().traits[0], hurt: false, goals: 0, starter: false, merc: true, gLeft: m.games }); S.agents.splice(i, 1); ui(); renderMarket() }
+        function hire(i) { let m = S.agents[i]; if (!canPay(m.cost, 'btn-h' + i)) return; S.money -= m.cost; sfx('cash'); S.players.push({ id: Date.now(), name: m.name, job: 'Merc', skill: m.skill, energy: 80, trait: T().traits[0], hurt: false, goals: 0, starter: false, merc: true, gLeft: m.games }); S.agents.splice(i, 1); save(); ui(); renderMarket() }
         function renderLeague() { let sorted = [...S.league].sort((a, b) => b.pts - a.pts || (b.gf - b.ga) - (a.gf - a.ga)); let h = '<table class="league-tbl"><tr><th>#</th><th>TEAM</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GD</th><th>PTS</th></tr>'; sorted.forEach((t, i) => { let gd = t.gf - t.ga; h += `<tr class="${t.me ? 'me' : ''}"><td>${i + 1}</td><td style="text-align:left">${t.name}</td><td>${t.p}</td><td>${t.w}</td><td>${t.d}</td><td>${t.l}</td><td>${gd > 0 ? '+' : ''}${gd}</td><td>${t.pts}</td></tr>` }); h += '</table>'; document.getElementById('league-tbl').innerHTML = h; let top = [...S.scorers].sort((a, b) => b.goals - a.goals).slice(0, 5); document.getElementById('pichichi').innerHTML = top.length ? top.map((s, i) => `<div class="pichichi-item"><span>${i + 1}.${s.name}</span><span>⚽${s.goals}</span></div>`).join('') : '<div style="color:#666;text-align:center">No goals</div>' }
         function simAI() { let ai = S.league.filter(t => !t.me).sort(() => Math.random() - .5); for (let i = 0; i < ai.length - 1; i += 2) { let h = ai[i], a = ai[i + 1]; if (!a) continue; let hg = Math.floor(Math.random() * 4), ag = Math.floor(Math.random() * 4); h.p++; a.p++; h.gf += hg; h.ga += ag; a.gf += ag; a.ga += hg; if (hg > ag) { h.w++; h.pts += 3; a.l++ } else if (ag > hg) { a.w++; a.pts += 3; h.l++ } else { h.d++; a.d++; h.pts++; a.pts++ } } }
         function renderStadium() { let t = T().stads; document.getElementById('stad-vis').className = 'stadium-vis lvl' + (S.stadLvl + 1); document.getElementById('stad-vis').innerHTML = t[S.stadLvl].n; document.getElementById('stad-up').innerHTML = t.map((s, i) => { let cur = i == S.stadLvl, nxt = i == S.stadLvl + 1; return `<div class="upgrade ${cur ? 'current' : ''}"><div class="upgrade-name">${s.n}${cur ? ' ✅' : ''}</div><div class="upgrade-info">🎟️$${s.tk}|🩹${Math.round(s.inj * 100)}%</div>${nxt ? `<button class="btn btn-gold" id="btn-up" style="margin-top:8px" onclick="upStad()">UPGRADE $${s.c}</button>` : ''}</div>` }).join('') }
-        function upStad() { let nxt = T().stads[S.stadLvl + 1]; if (!nxt || !canPay(nxt.c, 'btn-up')) return; S.money -= nxt.c; S.stadLvl++; sfx('cash'); ui(); renderStadium() }
+        function upStad() { let nxt = T().stads[S.stadLvl + 1]; if (!nxt || !canPay(nxt.c, 'btn-up')) return; S.money -= nxt.c; S.stadLvl++; sfx('cash'); save(); ui(); renderStadium() }
         function preMatch() { let starters = S.players.filter(p => p.starter && !p.hurt); if (starters.length < 11) { sfx('error'); go('squad'); return } if (Math.random() < .15) { showWork(); return } go('pre'); renderPre() }
         function showWork() { let avail = S.players.filter(p => p.starter && !p.hurt && !p.neph); if (!avail.length) { go('pre'); renderPre(); return } let v = avail[Math.floor(Math.random() * avail.length)]; S.workV = v; let t = T(); document.getElementById('work-t').textContent = t.workT; document.getElementById('work-d').innerHTML = `<strong>${v.name}</strong><br><br>${t.work[Math.floor(Math.random() * t.work.length)]}`; document.getElementById('work-btn').innerHTML = `<button class="btn btn-gold" onclick="payWork()">${t.payW}</button><button class="btn btn-red" onclick="skipWork()">${t.letM}</button>`; document.getElementById('m-work').classList.add('active') }
         function payWork() { if (!canPay(50)) return; S.money -= 50; sfx('cash'); S.workV = null; document.getElementById('m-work').classList.remove('active'); ui(); go('pre'); renderPre() }
@@ -791,6 +869,40 @@
         function toHQ() { S.week++; simAI(); S.agents = []; genAgents(); if (S.money < -500) { localStorage.removeItem('ww5'); go('over'); document.getElementById('over-title').textContent = '💀 GAME OVER 💀'; document.getElementById('over-msg').textContent = T().bankrupt; return } if (S.week > 10) { let sorted = [...S.league].sort((a, b) => b.pts - a.pts); if (sorted[0].me) { go('champ'); document.getElementById('champ-msg').textContent = T().champ; localStorage.removeItem('ww5'); return } } save(); document.getElementById('int-box').classList.remove('hidden'); document.getElementById('btn-hq').classList.add('hidden'); ui(); go('hq') }
         function showTutorial() { document.getElementById('tut-txt').textContent = T().tut; document.getElementById('m-tut').classList.add('active') }
         function closeTut() { document.getElementById('m-tut').classList.remove('active') }
+        // V6.0 NEW FEATURES
+        let muted = false;
+        function toggleMute() { muted = !muted; document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊'; }
+        const WEATHER = ['normal', 'rainy', 'heat'];
+        const WEATHER_ICON = { normal: '☀️', rainy: '🌧️', heat: '🔥' };
+        let weather = 'normal';
+        function setWeather() { weather = WEATHER[Math.floor(Math.random() * 3)]; }
+        function getWeatherMod() { if (weather == 'rainy') return { inj: 1.2, fat: 1.3 }; if (weather == 'heat') return { inj: 1.0, fat: 1.5 }; return { inj: 1, fat: 1 }; }
+        // Narrative Events (30 each)
+        const NAR = {
+            en: ["Big Dave trips over his own feet", "Dog runs onto pitch, chaos ensues", "Someone's kid starts crying on sideline", "Kebab Steve belches loudly", "Ref forgot his cards at home", "Ball goes into neighbour's garden", "Two Pints argues with a cloud", "Goalkeeper examining his fingernails", "Corner flag falls over", "Wobbly Bob claims handball (it hit his face)", "Mad Dog threatens the linesman", "Stray cat distracts the striker", "Someone's phone rings - it's their wife", "Player stops to tie shoelace at worst moment", "Hangover causing visible suffering", "Equipment bag stolen by local teen", "Pitch has suspicious puddles", "Goalkeeper chatting with the fans", "Player forgot his shin pads again", "Ball deflects off a shopping trolley", "Ref is clearly hungover too", "Someone's ex shows up to watch", "Crow steals a water bottle", "Player blames the sun in his eyes", "Psycho kicks the corner flag", "Car alarm goes off during match", "Ice cream van music interrupts play", "One Lung needs his inhaler", "Player's shorts rip dramatically", "Ball hits a spectator's dog"],
+            es: ["El Kevin se tropieza solito", "Un perro entra a la cancha", "Un niño llora en la banda", "El Gordo eructa durante el gol", "El árbitro olvidó las tarjetas", "El balón cae en el jardín del vecino", "Don Chuy discute con una nube", "El portero se revisa las uñas", "Se cae el banderín", "El Crudo alega mano (le pegó en la cara)", "El Brayan amenaza al línea", "Un gato distrae al delantero", "Suena el celular - es la patrona", "Para a amarrarse los zapatos en mal momento", "La cruda causa sufrimiento visible", "Chamaco roba la maleta", "La cancha tiene charcos sospechosos", "El portero platica con los fans", "Olvidó las espinilleras otra vez", "El balón pega en un carrito de súper", "El árbitro también viene crudo", "Llega la ex a verlo", "Un cuervo roba la botella de agua", "Culpa al sol en sus ojos", "El Rata patea el banderín", "Suena alarma de carro", "Pasa el carrito de los helados", "El Abuelo necesita su inhalador", "Se le rompen los shorts", "El balón le pega al perro de un fan"]
+        };
+        function getNarrative() { let n = NAR[lang]; return n[Math.floor(Math.random() * n.length)]; }
+        // Trophy Room
+        function getHistory() { try { return JSON.parse(localStorage.getItem('ww_history')) || []; } catch (e) { return []; } }
+        function saveHistory(season, pos, champ) { let h = getHistory(); h.push({ season, pos, champ, date: new Date().toLocaleDateString() }); localStorage.setItem('ww_history', JSON.stringify(h)); }
+        function showTrophy() { let h = getHistory(); document.getElementById('trophy-list').innerHTML = h.length ? h.map((s, i) => `<div class="trophy-item ${s.pos == 1 ? 'champ' : ''}"><span>S${s.season}</span><span>#${s.pos} ${s.pos == 1 ? '🏆' : ''}</span><span>${s.date}</span></div>`).join('') : '<div style="color:#666;text-align:center">No history yet</div>'; document.getElementById('m-trophy').classList.add('active'); }
+        function closeTrophy() { document.getElementById('m-trophy').classList.remove('active'); }
+        // Override sfx with mute check
+        const _sfx = sfx;
+        sfx = function (t) { if (!muted) _sfx(t); };
+        // Override startMatch to add weather
+        const _startMatch = startMatch;
+        startMatch = function () { setWeather(); _startMatch(); let p = document.getElementById('pitch'); p.classList.remove('rainy', 'heat'); if (weather != 'normal') p.classList.add(weather); document.getElementById('m-time').innerHTML = "0' " + WEATHER_ICON[weather]; };
+        // Override addCmt to include narratives
+        const _addCmt = addCmt;
+        addCmt = function (m, txt, cls) { _addCmt(m, txt, cls); if (cls == '' && Math.random() < 0.3) { setTimeout(() => _addCmt(m, '📢 ' + getNarrative(), ''), 200); } };
+        // Override postMatch for weather fatigue
+        const _postMatch = postMatch;
+        postMatch = function () { let wm = getWeatherMod(); S.players.filter(p => p.starter).forEach(p => { p.energy = Math.max(0, p.energy - Math.floor(5 * wm.fat)); }); _postMatch(); };
+        // Override toHQ for season history
+        const _toHQ = toHQ;
+        toHQ = function () { if (S.week >= 10) { let sorted = [...S.league].sort((a, b) => b.pts - a.pts); let pos = sorted.findIndex(t => t.me) + 1; saveHistory(getHistory().length + 1, pos, sorted[0].name); } _toHQ(); };
         window.onload = init;
     </script>
 </body>
